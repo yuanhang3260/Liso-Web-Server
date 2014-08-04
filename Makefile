@@ -1,20 +1,32 @@
-################################################################################
-# Makefile                                                                     #
-#                                                                              #
-# Description: This file contains the make rules for Recitation 1.             #
-#                                                                              #
-# Authors: Athula Balachandran <abalacha@cs.cmu.edu>,                          #
-#          Wolf Richter <wolf@cs.cmu.edu>                                      #
-#                                                                              #
-################################################################################
+#
+# Makefile for Project 1
+# Liso HTTP/1.1 Web Server
+#
+# Hang Yuan <hangyuan@andrew.cmu.edu>
+#
 
-default: echo_server echo_client
+CC=gcc
+CFLAGS=-Wall -Werror -O2
+SOURCE=src
+VPATH=$(SOURCE)
+OBJECTS = liso.o Utility.o selectEngine.o
 
-echo_server:
-	@gcc echo_server.c -o echo_server -Wall -Werror
 
-echo_client:
-	@gcc echo_client.c -o echo_client -Wall -Werror
+LFLAGS=-lssl -lcrypto
+
+default: lisod client
+
+lisod: $(OBJECTS)
+	$(CC) $(OBJECTS) -o lisod $(CFLAGS) $(LFLAGS)
+
+client: src/client.c
+	$(CC) $(CFLAGS) $(LFLAGS) $< -o client
+
+
+$(SOURCE)/%.o: %.c
+	$(CC) $(CLFAGS) $< -o $@
 
 clean:
-	@rm echo_server echo_client
+	rm -f lisod
+	rm ./*.o
+
