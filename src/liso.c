@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
     while (1)
     {
         int fd, nread;
-        
+
         testfds = readfds;
         fd = select(sock+1, &testfds, 
                     (fd_set*)NULL, (fd_set*)NULL, (struct timeval*)NULL);
@@ -66,8 +66,8 @@ int main(int argc, char* argv[])
                 fprintf(stderr, "Error accepting connection.\n");
                 return EXIT_FAILURE;
             }
+            //printf("adding client on fd %d ...\n", client_sock);
             FD_SET(client_sock, &readfds);
-            printf("adding client on fd %d ...\n", client_sock);
 
             //while((readret = recv(client_sock, buf, BUF_SIZE, 0)) > 1)
             //{
