@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <unistd.h>
 #include "Utility.h"
 #include "selectEngine.h"
@@ -37,49 +38,77 @@ int main(int argc, char* argv[])
     /* open server socket */
     sock = Open_ListenSocket(ECHO_PORT);
 
+    fd_set readfds, testfds;
+    FD_ZERO(&readfds);
+    FD_SET(sock, &readfds);
 
     /* finally, loop waiting for input and then write it back */
     while (1)
     {
-        cli_size = sizeof(cli_addr);
-        if ((client_sock = accept(sock, (struct sockaddr *) &cli_addr,
-                                 &cli_size)) == -1)
-        {
-            close(sock);
-            fprintf(stderr, "Error accepting connection.\n");
-            return EXIT_FAILURE;
-        }
-       
-        readret = 0;
+        int fd, nread;
 
-        while((readret = recv(client_sock, buf, BUF_SIZE, 0)) > 1)
+        testfds = readfds;
+        int re = select(FD_SETSIZE, &testfds, 
+                        (fd_set*)NULL, (fd_set*)NULL, (struct timeval*)NULL);
+
+        if (re < 1) {
+            Liso_error("Error: select failed");
+        }
+
+        for (fd = 0; fd < FD_SETSIZE; fd++)
         {
-            printf("read len = %d\n", readret);
-            if (send(client_sock, buf, readret, 0) != readret)
-            {
-                close_socket(client_sock);
-                close_socket(sock);
-                fprintf(stderr, "Error sending to client.\n");
-                return EXIT_FAILURE;
+            if (!FD_ISSET(fd, &testfds)) {
+                continue;
             }
-            memset(buf, 0, BUF_SIZE);
-        }
-        
-        if (readret == -1)
-        {
-            close_socket(client_sock);
-            close_socket(sock);
-            fprintf(stderr, "Error reading from client socket.\n");
-            return EXIT_FAILURE;
-        }
-        
-        if (close_socket(client_sock))
-        {
-            close_socket(sock);
-            fprintf(stderr, "Error closing client socket.\n");
-            return EXIT_FAILURE;
-        }
-        
+            if (fd == sock)
+            {
+                cli_size = sizeof(cli_addr);
+                if ((client_sock = accept(sock, (struct sockaddr *) &cli_addr,
+                                         &cli_size)) == -1)
+                {
+                    close(sock);
+                    fprintf(stderr, "Error accepting connection.\n");
+                    return EXIT_FAILURE;
+                }
+                FD_SET(client_sock, &readfds);
+                printf("adding client on fd %d ...\n", client_sock);
+            }
+            else
+            {
+                ioctl(fd, FIONREAD, &nread);
+                if (nread == 0)
+                {
+                    close(fd);
+                    FD_CLR(fd, &readfds);
+                    printf("removing client on fd %d ...\n", fd);
+                }
+                else
+                {
+                    readret = 0;
+
+                    while((readret = recv(client_sock, buf, BUF_SIZE, 0)) > 1)
+                    {
+                        printf("read len = %d\n", readret);
+                        if (send(client_sock, buf, readret, 0) != readret)
+                        {
+                            close_socket(client_sock);
+                            close_socket(sock);
+                            fprintf(stderr, "Error sending to client.\n");
+                            return EXIT_FAILURE;
+                        }
+                        memset(buf, 0, BUF_SIZE);
+                    }
+                    
+                    if (readret == -1)
+                    {
+                        close_socket(client_sock);
+                        close_socket(sock);
+                        fprintf(stderr, "Error reading from client socket.\n");
+                        return EXIT_FAILURE;
+                    }
+                }
+            }
+        }        
     }
 
     close_socket(sock);
