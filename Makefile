@@ -14,7 +14,7 @@ OBJECTS = liso.o Utility.o selectEngine.o
 
 LFLAGS=-lssl -lcrypto
 
-default: lisod client
+default: lisod client sample_server
 
 lisod: $(OBJECTS)
 	$(CC) $(OBJECTS) -o lisod $(CFLAGS) $(LFLAGS)
@@ -22,6 +22,8 @@ lisod: $(OBJECTS)
 client: src/client.c
 	$(CC) $(CFLAGS) $(LFLAGS) $< -o client
 
+sample_server: sample_server.c
+	$(CC) $(CLFAGS) $< -o $@
 
 $(SOURCE)/%.o: %.c
 	$(CC) $(CLFAGS) $< -o $@

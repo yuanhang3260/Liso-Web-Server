@@ -38,12 +38,12 @@ for i in xrange(numTrials):
 			randomData.append(str(random_len)+"\n"+random_string) 
 			randomLen.append(random_len+len(str(random_len))+1) 
 			socketSubset[j].send(randomData[j])
-			print j
-			print random_len
+			#print j
+			#print random_len
 			
 	for j in xrange(numWritesReads):
 			data = socketSubset[j].recv(randomLen[j])
-			print j
+			#print j
 			if(data != randomData[j]):
 				sys.stderr.write("Error: Data received is not the same as sent! \n")
 				sys.exit(1)
