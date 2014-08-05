@@ -10,6 +10,7 @@ CFLAGS=-Wall -Werror -O2
 SOURCE=src
 VPATH=$(SOURCE)
 OBJECTS = liso.o Utility.o selectEngine.o
+S_OBJ = sample_server.o Utility.o selectEngine.o
 
 
 LFLAGS=-lssl -lcrypto
@@ -22,13 +23,13 @@ lisod: $(OBJECTS)
 client: src/client.c
 	$(CC) $(CFLAGS) $(LFLAGS) $< -o client
 
-sample_server: sample_server.c
-	$(CC) $(CLFAGS) $< -o $@
+sample_server: $(S_OBJ)
+	$(CC) $(S_OBJ) -o $@ $(CFLAGS)
 
 $(SOURCE)/%.o: %.c
 	$(CC) $(CLFAGS) $< -o $@
 
 clean:
-	rm -f lisod
-	rm ./*.o
+	rm -rf lisod
+	rm -rf ./*.o
 
