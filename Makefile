@@ -30,6 +30,6 @@ $(SOURCE)/%.o: %.c
 	$(CC) $(CLFAGS) $< -o $@
 
 clean:
-	rm -rf lisod
+	rm -rf lisod client sample_server
 	rm -rf ./*.o
 
