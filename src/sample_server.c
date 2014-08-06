@@ -49,16 +49,13 @@ int byte_cnt = 0;
 
 int main(int argc, char **argv)
 {
-    int listenfd, connfd, port; 
+    int listenfd, connfd; 
     socklen_t clientlen = sizeof(struct sockaddr_in);
     struct sockaddr_in clientaddr;
     pool_t pool; 
 
-    if (argc != 2) {
-        fprintf(stderr, "usage: %s <port>\n", argv[0]);
-        exit(0);
-    }
-    port = atoi(argv[1]);
+    int port = (argc == 1)? 9090 : atoi(argv[1]);
+    
 
     listenfd = Open_ListenSocket(port);
     init_pool(listenfd, &pool);
