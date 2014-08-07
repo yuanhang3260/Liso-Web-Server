@@ -15,7 +15,7 @@
 #include "Utility.h"
 #include "selectEngine.h"
 
-#define ECHO_PORT 9090
+#define DFT_PORT 9090
 #define BUF_SIZE 4096
 
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     struct sockaddr_in clientaddr;
     pool_t pool; 
 
-    int port = (argc == 1)? 9090 : atoi(argv[1]);
+    int port = (argc == 1)? DFT_PORT : atoi(argv[1]);
     
 
     listenfd = Open_ListenSocket(port);
