@@ -7,10 +7,16 @@
 
 CC=gcc
 CFLAGS=-Wall -Werror -O2
-SOURCE=src
+SOURCE_DIR=src
+OBJ_DIR=lib
 VPATH=$(SOURCE)
-OBJECTS = liso.o Utility.o selectEngine.o
-S_OBJ = sample_server.o Utility.o selectEngine.o
+OBJECTS = $(OBJ_DIR)/liso.o \
+          $(OBJ_DIR)/Utility.o \
+          $(OBJ_DIR)/selectEngine.o
+
+S_OBJ = $(OBJ_DIR)/sample_server.o \
+        $(OBJ_DIR)/Utility.o \
+        $(OBJ_DIR)/selectEngine.o
 
 
 LFLAGS=-lssl -lcrypto
@@ -18,18 +24,18 @@ LFLAGS=-lssl -lcrypto
 default: lisod client sample_server
 
 lisod: $(OBJECTS)
-	$(CC) $(OBJECTS) -o lisod $(CFLAGS) $(LFLAGS)
+	$(CC) $(OBJECTS) -o lisod $(CFLAGS)
 
 client: src/client.c
-	$(CC) $(CFLAGS) $(LFLAGS) $< -o client
+	$(CC) $(CFLAGS) $< -o client
 
 sample_server: $(S_OBJ)
 	$(CC) $(S_OBJ) -o $@ $(CFLAGS)
 
-$(SOURCE)/%.o: %.c
-	$(CC) $(CLFAGS) $< -o $@
+$(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.c
+	$(CC) -c -o $@ $< $(CFLAGS) 
 
 clean:
 	rm -rf lisod client sample_server
-	rm -rf ./*.o
+	rm -rf $(OBJ_DIR)/*.o
 
