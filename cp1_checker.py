@@ -4,6 +4,7 @@ from socket import *
 import sys
 import random
 import os
+import time
 
 if len(sys.argv) < 7:
 	sys.stderr.write('Usage: %s <ip> <port> <#trials> <#writes and reads per trial> <max # bytes to write at a time> <#connections> \n' % (sys.argv[0]))
@@ -40,14 +41,12 @@ for i in xrange(numTrials):
 			socketSubset[j].send(randomData[j])
 			#print j
 			#print random_len
-			
+	
 	for j in xrange(numWritesReads):
 			data = socketSubset[j].recv(randomLen[j])
-			#print j
 			if(data != randomData[j]):
 				sys.stderr.write("Error: Data received is not the same as sent! \n")
 				sys.exit(1)
-				
 
 for i in xrange(numConnections):
 	socketList[i].close()

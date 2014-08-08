@@ -43,14 +43,16 @@ int main(int argc, char* argv[])
     FD_SET(sock, &readfds);
 
     /* finally, loop waiting for input and then write it back */
+    int loop_num = 1;
     while (1)
     {
+        printf("loop %d\n", loop_num);
         int fd, nread;
 
         testfds = readfds;
         fd = select(sock+1, &testfds, 
                     (fd_set*)NULL, (fd_set*)NULL, (struct timeval*)NULL);
-
+        debug(0);
         if (fd < 1) {
             Liso_error("Error: select failed");
         }
@@ -66,7 +68,8 @@ int main(int argc, char* argv[])
                 fprintf(stderr, "Error accepting connection.\n");
                 return EXIT_FAILURE;
             }
-            //printf("adding client on fd %d ...\n", client_sock);
+            debug(1);
+            printf("adding client on fd %d ...\n", client_sock);
             FD_SET(client_sock, &readfds);
 
             //while((readret = recv(client_sock, buf, BUF_SIZE, 0)) > 1)
@@ -74,17 +77,16 @@ int main(int argc, char* argv[])
             bzero(buf, BUF_SIZE);
             if ((nread = recv(client_sock, buf, BUF_SIZE, 0)) < 0)
             {
-                //printf("nread = %d\n", nread);
-                close_socket(client_sock);
-                close_socket(sock);
+                Close_Socket(client_sock);
+                Close_Socket(sock);
                 fprintf(stderr, "Error reading from client socket.\n");
                 return EXIT_FAILURE;
             }
-            
+            printf("nread = %d\n", nread);
             if (send(client_sock, buf, nread, 0) != nread)
             {
-                close_socket(client_sock);
-                close_socket(sock);
+                Close_Socket(client_sock);
+                Close_Socket(sock);
                 fprintf(stderr, "Error sending to client.\n");
                 return EXIT_FAILURE;
             }
@@ -98,10 +100,12 @@ int main(int argc, char* argv[])
                 FD_CLR(fd, &readfds);
                 printf("removing client on fd %d ...\n", fd);
             }
-        }     
+        }
+        loop_num++;
+        printf("\n");
     }
 
-    close_socket(sock);
+    Close_Socket(sock);
 
     return EXIT_SUCCESS;
 }
