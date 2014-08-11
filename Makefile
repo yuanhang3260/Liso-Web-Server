@@ -12,16 +12,20 @@ OBJ_DIR=lib
 VPATH=$(SOURCE)
 OBJECTS = $(OBJ_DIR)/liso.o \
           $(OBJ_DIR)/Utility.o \
-          $(OBJ_DIR)/selectEngine.o
+          $(OBJ_DIR)/SelectEngine.o \
+          $(OBJ_DIR)/Logger.o \
+
 
 S_OBJ = $(OBJ_DIR)/sample_server.o \
         $(OBJ_DIR)/Utility.o \
-        $(OBJ_DIR)/selectEngine.o
+        $(OBJ_DIR)/SelectEngine.o \
+        $(OBJ_DIR)/Logger.o \
+        $(OBJ_DIR)/FileIO.o \
 
 
 LFLAGS=-lssl -lcrypto
 
-default: lisod client sample_server
+default: client sample_server
 
 lisod: $(OBJECTS)
 	$(CC) $(OBJECTS) -o lisod $(CFLAGS)

@@ -27,7 +27,6 @@
 Here is a listing of all files associated with Recitation 1 and what their'
 purpose is:
 
-                    .../README                  - Current document 
                     .../src/echo_client.c       - Simple echo network client
                     .../src/echo_server.c       - Simple echo network server
                     .../src/Makefile            - Contains rules for make
