@@ -22,6 +22,8 @@ S_OBJ = $(OBJ_DIR)/sample_server.o \
         $(OBJ_DIR)/Logger.o \
         $(OBJ_DIR)/Socket.o \
         $(OBJ_DIR)/ClientConnection.o \
+        $(OBJ_DIR)/HTTPRequest.o \
+        $(OBJ_DIR)/HTTPHeader.o \
 
 
 LFLAGS=-lssl -lcrypto

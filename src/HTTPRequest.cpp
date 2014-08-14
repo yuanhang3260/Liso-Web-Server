@@ -8,7 +8,7 @@
 
 
 /** @brief Class HTTPRequest constructor */
-HTTPRequest::HTTPRequest(int port, char *addr, int https)
+HTTPRequest::HTTPRequest(int port, const char *addr, int https)
 {
     //char buf[16];
     method = UNIMPLEMENTED;
@@ -23,6 +23,8 @@ HTTPRequest::HTTPRequest(int port, char *addr, int https)
     
     isNew = 1;
     isCGI = -1;
+
+    (void)addr;
 
     // envp = malloc(sizeof(DLL));
     // initList(envp, compareHeaderEntry, freeHeaderEntry, NULL);
@@ -44,7 +46,7 @@ HTTPRequest::~HTTPRequest()
     free(uri);
     free(content);
 
-    for (int i = 0; i < headers.size(); i++) {
+    for (size_t i = 0; i < headers.size(); i++) {
         delete &(headers[i]);
     }
     headers.clear();
@@ -77,9 +79,8 @@ char* HTTPRequest::nextToken(char *buf, char *bufEnd)
 
 
 /** @brief parse request */
-enum Status HTTPRequest::httpParse( char *bufPtr, 
-                                    ssize_t *size, 
-                                    int full )
+enum HTTPRequest::Status 
+HTTPRequest::httpParse(char *bufPtr, ssize_t *size, int full)
 {
     if(curState == requestDone) 
     {
@@ -104,7 +105,7 @@ enum Status HTTPRequest::httpParse( char *bufPtr,
     Logger::log("Start parsing %d bytes\n", *size);
     while(1)
     {
-        if(curState == content) {
+        if(curState == contentLine) {
             nextPtr = bufEnd;
         } 
         else 
@@ -191,28 +192,25 @@ void HTTPRequest::httpParseLine( char *line,
     switch(curState) {
     case requestLine: 
     {
-        char *method = malloc(lineSize + 1);
-        char *uri = malloc(lineSize + 1);
-        char *lineStr = calloc(lineSize + 1, 1);
-        memcpy(lineStr, line, lineSize);
+        char* _method = new char[lineSize + 1];
+        char* _uri = new char[lineSize + 1];
         int version1, version2;
         
-        if(sscanf(lineStr, "%s %s HTTP/%d.%d\r\n", 
-                   method, uri, &version1, &version2) != 4) 
+        if(sscanf(line, "%s %s HTTP/%d.%d\r\n", 
+                   _method, _uri, &version1, &version2) != 4) 
         {
-            free(lineStr);
+            delete[] _method;
+            delete[] _uri;
             setRequestError(BAD_REQUEST);
         }
         else
         {
-            free(lineStr);
-            Logger::log("Parsed Status Line: Method = %s, URI = %s, Version = %d\n",
-                         method, uri, version2);
+            Logger::log("Parsed Request Line: Method = %s, URI = %s, Version = %d\n",
+                         _method, _uri, version2);
             int numMethods = sizeof(methodTable) / sizeof(methodEntry);
-            int i;
-            for(i = 0; i < numMethods; i++) 
+            for(int i = 0; i < numMethods; i++) 
             {
-                if(strcmp(methodTable[i].s, method) == 0) {
+                if(strcmp(methodTable[i].s.c_str(), _method) == 0) {
                     method = methodTable[i].m;
                     break;
                 }
@@ -222,18 +220,19 @@ void HTTPRequest::httpParseLine( char *line,
             } 
             else if(version1 != 1 || version2 != 1  ) {
                 setRequestError(HTTP_VERSION_NOT_SUPPORTED);
-            } 
-            else {
-                uri = realloc(uri, strlen(uri) + 1);
-                uri = uri;
+            }
+            else 
+            {
+                uri = new char[strlen(_uri) + 1];
+                strncpy(uri, _uri, strlen(_uri) + 1);
                 version = version2;
                 curState = headerLine;
             }
         }
         /* Clean up */
-        free(method);
+        delete[] _method;
         if(curState == requestError) {
-            free(uri);
+            delete[] uri;
         }
     }
     break;
@@ -243,14 +242,14 @@ void HTTPRequest::httpParseLine( char *line,
         if(lineSize == 2 && line[0] == '\r' && line[1] == '\n') 
         {
             Logger::log("Header Close line\n");
-            if(isValidRequest(req)) 
+            if(isValidRequest()) 
             {
                 Logger::log("isValid\n");
                 if(method == GET || method == HEAD) {
                     curState = requestDone;
                 } 
                 else if(method == POST) {
-                    curState = content;
+                    curState = contentLine;
                 } 
                 else {
                     curState = requestError;
@@ -263,23 +262,20 @@ void HTTPRequest::httpParseLine( char *line,
         else 
         {
             Logger::log("KeyValue header\n");
-            char *key = calloc(lineSize);
-            char *value = calloc(lineSize);
-            char *strLine = calloc(lineSize + 1, 1);
-            memcpy(strLine, line, lineSize);
-            if(sscanf(strLine, "%[a-zA-Z0-9-]:%[^\r\n]", key, value) != 2) {
+            char *key = new char[lineSize];
+            char *value = new char[lineSize];
+            if(sscanf(line, "%[a-zA-Z0-9-]:%[^\r\n]", key, value) != 2) {
                 setRequestError(BAD_REQUEST);
             }
             else {
                 headers.push_back(HTTPHeader(key, value));
             }
-            free(strLine);
             free(key);
             free(value);
         }
     }
     break;
-    case content: {
+    case contentLine: {
         // char *lengthStr = getValueByKey(header, "content-length");
         // int length = atoi(lengthStr);
         // int curLength = contentLength;
@@ -318,15 +314,15 @@ void HTTPRequest::httpParseLine( char *line,
 
 
 /** convert method to string */
-string getMethodString(enum Method method)
+string HTTPRequest::getMethodString(HTTPRequest::Method method)
 {
     switch(method) 
     {
-        case GET:
+        case HTTPRequest::GET:
             return "GET";
-        case HEAD:
+        case HTTPRequest::HEAD:
             return "HEAD";
-        case POST:
+        case HTTPRequest::POST:
             return "POST";
         default:
             return "";
@@ -338,14 +334,14 @@ string getMethodString(enum Method method)
 /** get a header value by its key from the header list */
 string HTTPRequest::getHeaderValueByKey(string key)
 {
-    for (int i = 0; i < headers.size(); i++) 
+    for (size_t i = 0; i < headers.size(); i++) 
     {
         if (headers[i].getKey().compare(key) == 0)
         {
             return headers[i].getValue();
         }
     }
-    return NULL;
+    return "";
 }
 
 
@@ -359,14 +355,14 @@ int HTTPRequest::isValidRequest()
     {
         case POST: {
             string length = getHeaderValueByKey("content-length");
-            if(length != NULL) {
+            if(length != "") {
                 return 1;
             }
         }
         case HEAD:
         case GET: {
             string host = getHeaderValueByKey("host");
-            if(host != NULL) {
+            if(host != "") {
                 return 1;
             }
             break;
@@ -411,7 +407,7 @@ void HTTPRequest::print()
     }
     Logger::log("-URI: %s\n", uri);
     Logger::log("-Version: HTTP/1.%d\n", version);
-    for (int i = 0; i < headers.size(); i++) {
+    for (size_t i = 0; i < headers.size(); i++) {
         headers[i].print();
     }        
 

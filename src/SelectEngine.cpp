@@ -93,7 +93,7 @@ void SelPool::check_clients()
         if ((connfd > 0) && (FD_ISSET(connfd, &ready_set))) 
         {
             nready--;
-            if ((nread = read(connfd, buf, BUF_SIZE)) != 0) 
+            if ((nread = read(connfd, buf, BUF_SIZE)) >= 0) 
             {
                 byte_cnt += nread;
                 printf("Server received %d bytes on fd %d\n", nread, connfd);

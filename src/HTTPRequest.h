@@ -1,5 +1,5 @@
-#ifndef HTTPPARSER_H
-#define HTTPPARSER_H
+#ifndef __HTTPREQUEST_H__
+#define __HTTPREQUEST_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,15 +11,10 @@
 #include "Utility.h"
 #include "HTTPHeader.h"
 
-#using namespace std;
-
-struct methodEntry {
-    enum Method m;
-    char *s;
-} methodEntry;
+using namespace std;
 
 
-class HTTPRequest 
+class HTTPRequest
 {
 /*----------------------------------------------------------------------------*/
 public:
@@ -54,14 +49,14 @@ public:
     enum State {
         requestLine,
         headerLine,
-        content,
+        contentLine,
         requestError,
         requestDone,
     };
 
 
     /* Constructor and Destructor */
-    HTTPRequest(int,char *, int);
+    HTTPRequest(int, const char *, int);
     ~HTTPRequest();
 
     /** parse http request */
@@ -69,7 +64,7 @@ public:
     /** is a CGI request */
     //int isCGIRequest();
     /** is a new request */
-    int isNewRequest(); { return isNew; }
+    int isNewRequest() { return isNew; }
 
     /** print the http request */
     void print();
@@ -103,7 +98,14 @@ private:
     
     //void buildENVP();
     //void insertENVP(char*, char*);
-    char *getMethodString(enum Method);
+    string getMethodString(enum Method);
 };
 
-#endif
+
+struct methodEntry {
+    HTTPRequest::Method m;
+    string s;
+};
+
+
+#endif  /* __HTTPREQUEST_H__ */

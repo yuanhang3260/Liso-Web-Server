@@ -28,30 +28,30 @@ public:
     };
 
     /* Constructor */
-    ClientConnection(int, ssize_t, int, char *, enum HTTPType);
+    ClientConnection(int, ssize_t, int, string, enum HTTPType);
     ~ClientConnection();
 
     /** compare and map functions */
-    int compare(void *data1, void *data2) { return (fd - clientCon2->fd); }
+    int compare(ClientConnection *clientCon2) { return (fd - clientCon2->fd); }
     int map(void *data) { return isOpen; }
 
     /* Getters and Setters */
     int getSocket() { return fd; }
     HTTPRequest* getReqest() { return req; }
-    void getReadBufferForRead(char **, ssize_t *);
-    void getReadBufferForWrite(char **, ssize_t *);
-    void getWriteBufferForRead(char **, ssize_t *);
-    void getWriteBufferForWrite(char **, ssize_t *);
+    char* getReadBuffer_ForRead(ssize_t *size);
+    char* getReadBuffer_ForWrite(ssize_t *);
+    char* getWriteBuffer_ForRead(ssize_t *);
+    char* getWriteBuffer_ForWrite(ssize_t *);
 
     void setClose() { isOpen = 0; }
     
-    void addReadSize(ssize_t) { curReadSize += readSize; }
+    void addReadSize(ssize_t readSize) { curReadSize += readSize; }
     void removeReadSize(ssize_t);
     
-    void addWriteSize(ssize_t) { curWriteSize += writeSize; }
+    void addWriteSize(ssize_t writeSize) { curWriteSize += writeSize; }
     void removeWriteSize(ssize_t);
 
-    void setHTTP() { connSSL = NULL; }
+    //void setHTTP() { connSSL = NULL; }
     //void setHTTPS(SSL_CTX *);
 
     int isHTTP() { return connType == T_HTTP; }

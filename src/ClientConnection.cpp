@@ -36,8 +36,8 @@ ClientConnection::ClientConnection( int connFd,
 
     isOpen = 1;
     
-    req = createRequestObj(serverPort, clientAddr, 
-                           (connType == T_HTTPS) ? 1 : 0 );
+    req = new HTTPRequest(serverPort, clientAddr.c_str(), 
+                          (connType == T_HTTPS) ? 1 : 0 );
     //res = NULL;
 
     CGIout = -1;
@@ -51,18 +51,15 @@ ClientConnection::~ClientConnection()
     //     SSL_shutdown(connSSL);
     //     SSL_free(connSSL);
     // }
-    close(connFd);
-    if (clientAddr != NULL) {
-        delete[] clientAddr;
-    }
+    close(fd);
     if (readBuffer != NULL) {
         delete[] readBuffer;
     }
     if (writeBuffer != NULL) {
-        delete[] writeBuffer);
+        delete[] writeBuffer;
     }
     
-    req->~Request();
+    req->~HTTPRequest();
 
     //res = NULL;
     
@@ -71,28 +68,28 @@ ClientConnection::~ClientConnection()
 
 
 /** get readBuffer for read */
-char* getReadBuffer_ForRead(ssize_t *size)
+char* ClientConnection::getReadBuffer_ForRead(ssize_t *size)
 {
     *size = curReadSize;
     return readBuffer;
 }
 
 /** get readBuffer for write */
-char* getReadBuffer_ForWrite(ssize_t *size)
+char* ClientConnection::getReadBuffer_ForWrite(ssize_t *size)
 {
     *size = maxReadSize - curReadSize;;
     return readBuffer + curReadSize;
 }
 
 /** get writeBuffer for read */
-char* getConnObjWriteBufferForRead(ssize_t *size)
+char* ClientConnection::getWriteBuffer_ForRead(ssize_t *size)
 {
     *size = curWriteSize;
     return writeBuffer;
 }
 
 /** get writeBuffer for write */
-char* getConnObjWriteBufferForWrite(ssize_t *size)
+char* ClientConnection::getWriteBuffer_ForWrite(ssize_t *size)
 {
     *size = maxWriteSize - curWriteSize;
     return writeBuffer + curWriteSize;
@@ -100,9 +97,8 @@ char* getConnObjWriteBufferForWrite(ssize_t *size)
 
 
 /** remove read size */
-void removeReadSize(ssize_t readSize)
+void ClientConnection::removeReadSize(ssize_t readSize)
 {
-    ssize_t curReadSize = curReadSize;
     if(readSize <= curReadSize) {
         char *buf = readBuffer;
         memmove(buf, buf + readSize, curReadSize - readSize);
@@ -112,9 +108,8 @@ void removeReadSize(ssize_t readSize)
 
 
 /** remove write size */
-void removeWriteSize(ssize_t writeSize)
+void ClientConnection::removeWriteSize(ssize_t writeSize)
 {
-    ssize_t curWriteSize = curWriteSize;
     if(writeSize <= curWriteSize) {
         char *buf = writeBuffer;
         memmove(buf, buf + writeSize, curWriteSize - writeSize);
@@ -124,7 +119,7 @@ void removeWriteSize(ssize_t writeSize)
 
 
 /** if it's an empty */
-int isEmpty()
+int ClientConnection::isEmpty()
 {
     switch(wbStatus)
     {
@@ -155,7 +150,7 @@ int isEmpty()
 
 
 /** clean CGI object */
-void cleanCGI()
+void ClientConnection::cleanCGI()
 {
     if (CGIout > 0) {
         close(CGIout);
