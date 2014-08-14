@@ -1,6 +1,8 @@
 #ifndef __FILEIO_H_
 #define __FILEIO_H_ 
 
+using namespace std;
+
 char *_lockFile;
 char *_wwwFolder;
 char *_CGIFolder;

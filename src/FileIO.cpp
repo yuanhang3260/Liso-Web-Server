@@ -39,7 +39,7 @@ fileMetadata *prepareFile(char *uri, char *mode)
     } else {
         path = createPath(_wwwFolder, uri, NULL);
     }
-    logger(LogDebug, "FilePath:[%s]\n", path);
+    logger(Logger::LOG_DEBUG, "FilePath:[%s]\n", path);
     if(stat(path, &fileStat) != 0) {
         free(path);
         return NULL;
@@ -53,10 +53,10 @@ fileMetadata *prepareFile(char *uri, char *mode)
     fd = fopen(path, mode);
     if(fd == NULL) {
         free(path);
-        logger(LogDebug, "Failed open\n");
+        logger(Logger::LOG_DEBUG, "Failed open\n");
         return NULL;
     } else {
-        logger(LogDebug, "Opened\n");
+        logger(Logger::LOG_DEBUG, "Opened\n");
         fm = malloc(sizeof(fileMetadata));
         fm->fd = fd;
         fm->path = path;

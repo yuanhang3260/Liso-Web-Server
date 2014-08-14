@@ -1,0 +1,98 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BUF_SIZE	src/SelectEngine.h	13;"	d
+BUF_SIZE	src/client.c	24;"	d	file:
+CC	Makefile	/^CC=g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-Wall -Werror -O2$/;"	m
+CSS	src/FileIO.h	/^    CSS,$/;"	e	enum:MIMEType
+CUR_LOG_LEVEL	src/Logger.h	6;"	d
+Close_Socket	src/SelectEngine.cpp	/^int Close_Socket(int sock)$/;"	f
+DFT_PORT	src/sample_server.cpp	21;"	d	file:
+ECHO_PORT	src/client.c	23;"	d	file:
+ERROR	src/Utility.h	4;"	d
+GIF	src/FileIO.h	/^    GIF,$/;"	e	enum:MIMEType
+HTML	src/FileIO.h	/^    HTML,$/;"	e	enum:MIMEType
+JPEG	src/FileIO.h	/^    JPEG,$/;"	e	enum:MIMEType
+LFLAGS	Makefile	/^LFLAGS=-lssl -lcrypto$/;"	m
+LISTENQ	src/SelectEngine.h	12;"	d
+Liso_error	src/Utility.cpp	/^void Liso_error(char* errmsg)$/;"	f
+LogDebug	src/Logger.h	/^    LogDebug = 1,$/;"	e	enum:LogLevel
+LogLevel	src/Logger.h	/^enum LogLevel{$/;"	g
+LogProd	src/Logger.h	/^    LogProd = 2,$/;"	e	enum:LogLevel
+MIMEType	src/FileIO.h	/^enum MIMEType{$/;"	g
+OBJECTS	Makefile	/^OBJECTS = $(OBJ_DIR)\/liso.o \\$/;"	m
+OBJ_DIR	Makefile	/^OBJ_DIR=lib$/;"	m
+OTHER	src/FileIO.h	/^    OTHER,$/;"	e	enum:MIMEType
+Open_ListenSocket	src/SelectEngine.cpp	/^int Open_ListenSocket(int port) $/;"	f
+PNG	src/FileIO.h	/^    PNG,$/;"	e	enum:MIMEType
+SA	src/SelectEngine.h	/^typedef struct sockaddr SA;$/;"	t	typeref:struct:sockaddr
+SOURCE_DIR	Makefile	/^SOURCE_DIR=src$/;"	m
+SUCCESS	src/Utility.h	5;"	d
+S_OBJ	Makefile	/^S_OBJ = $(OBJ_DIR)\/sample_server.o \\$/;"	m
+SelectPool	src/SelectEngine.h	/^typedef struct SelectPool$/;"	s
+VPATH	Makefile	/^VPATH=$(SOURCE)$/;"	m
+_CGIFolder	src/FileIO.h	/^char *_CGIFolder;$/;"	v
+__FILEIO_H_	src/FileIO.h	2;"	d
+__LOGGER_H_	src/Logger.h	2;"	d
+__SELECTENGINE_H_	src/SelectEngine.h	2;"	d
+__UTILITY_H_	src/Utility.h	2;"	d
+_lockFile	src/FileIO.h	/^char *_lockFile;$/;"	v
+_wwwFolder	src/FileIO.h	/^char *_wwwFolder;$/;"	v
+add_client	src/SelectEngine.cpp	/^static void add_client(int connfd, pool_t *pool) $/;"	f	file:
+byte_cnt	src/SelectEngine.cpp	/^int byte_cnt = 0; $/;"	v
+check_clients	src/SelectEngine.cpp	/^void check_clients(pool_t *pool) $/;"	f
+check_server	src/SelectEngine.cpp	/^void check_server(int listenfd, pool_t *pool)$/;"	f
+clientfd	src/SelectEngine.h	/^    int clientfd[FD_SETSIZE];$/;"	m	struct:SelectPool
+createPath	src/FileIO.cpp	/^char *createPath(char *dir, char *path, char *fileName)$/;"	f
+data	cp1_checker.py	/^			data = socketSubset[j].recv(randomLen[j])$/;"	v
+debug	src/Utility.cpp	/^void debug(int n)$/;"	f
+endLog	src/Logger.cpp	/^void endLog() $/;"	f
+fd	src/FileIO.h	/^   FILE *fd;$/;"	m	struct:fileMetadata
+fileMetadata	src/FileIO.h	/^typedef struct fileMetadata {$/;"	s
+fileMetadata	src/FileIO.h	/^} fileMetadata;$/;"	t	typeref:struct:fileMetadata
+freeFileMeta	src/FileIO.cpp	/^void freeFileMeta(fileMetadata *fm)$/;"	f
+getCGIPath	src/FileIO.cpp	/^char *getCGIPath(){$/;"	f
+getContentLength	src/FileIO.cpp	/^char *getContentLength(fileMetadata *fm)$/;"	f
+getContentType	src/FileIO.cpp	/^char *getContentType(fileMetadata *fm)$/;"	f
+getFilePath	src/FileIO.cpp	/^char *getFilePath(fileMetadata *fm)$/;"	f
+getFileType	src/FileIO.cpp	/^enum MIMEType getFileType(char *path)$/;"	f
+getLastMod	src/FileIO.cpp	/^time_t getLastMod(fileMetadata *fm)$/;"	f
+getLogger	src/Logger.cpp	/^FILE* getLogger() $/;"	f
+initFileIO	src/FileIO.cpp	/^int initFileIO(char *lockFile, char *wwwFolder, char *CGIFolder)$/;"	f
+initLogger	src/Logger.cpp	/^int initLogger(String logFileName)$/;"	f
+init_pool	src/SelectEngine.cpp	/^void init_pool(int listenfd, pool_t *pool) $/;"	f
+lastMod	src/FileIO.h	/^   time_t lastMod;$/;"	m	struct:fileMetadata
+length	src/FileIO.h	/^   int length;$/;"	m	struct:fileMetadata
+loadFile	src/FileIO.cpp	/^char *loadFile(fileMetadata *fm)$/;"	f
+logFILE	src/Logger.cpp	/^static FILE* logFILE;$/;"	v	file:
+logger	src/Logger.cpp	/^void logger(enum LogLevel level, const char *format, ...)$/;"	f
+main	src/client.c	/^int main(int argc, char* argv[])$/;"	f
+main	src/sample_server.cpp	/^int main(int argc, char **argv)$/;"	f
+maxfd	src/SelectEngine.h	/^    int maxfd;$/;"	m	struct:SelectPool
+maxi	src/SelectEngine.h	/^    int maxi;$/;"	m	struct:SelectPool
+nready	src/SelectEngine.h	/^    int nready;$/;"	m	struct:SelectPool
+numBytes	cp1_checker.py	/^numBytes = int(sys.argv[5])$/;"	v
+numConnections	cp1_checker.py	/^numConnections = int(sys.argv[6])$/;"	v
+numTrials	cp1_checker.py	/^numTrials = int(sys.argv[3])$/;"	v
+numWritesReads	cp1_checker.py	/^numWritesReads = int(sys.argv[4])$/;"	v
+open_ListenSocket	src/SelectEngine.cpp	/^static int open_ListenSocket(int port) $/;"	f	file:
+path	src/FileIO.h	/^   char *path;$/;"	m	struct:fileMetadata
+pool_t	src/SelectEngine.h	/^} pool_t;$/;"	t	typeref:struct:SelectPool
+prepareFile	src/FileIO.cpp	/^fileMetadata *prepareFile(char *uri, char *mode)$/;"	f
+randomData	cp1_checker.py	/^	randomData = []$/;"	v
+randomLen	cp1_checker.py	/^	randomLen = []$/;"	v
+random_len	cp1_checker.py	/^			random_len = random.randrange(1, numBytes)$/;"	v
+random_string	cp1_checker.py	/^			random_string = os.urandom(random_len)$/;"	v
+read_set	src/SelectEngine.h	/^    fd_set read_set;$/;"	m	struct:SelectPool
+ready_set	src/SelectEngine.h	/^    fd_set ready_set;$/;"	m	struct:SelectPool
+s	cp1_checker.py	/^	s = socket(AF_INET, SOCK_STREAM)$/;"	v
+serverHost	cp1_checker.py	/^serverHost = sys.argv[1].strip()$/;"	v
+serverPort	cp1_checker.py	/^serverPort = int(sys.argv[2])$/;"	v
+socketList	cp1_checker.py	/^socketList = []$/;"	v
+socketSubset	cp1_checker.py	/^	socketSubset = []$/;"	v
+socketSubset	cp1_checker.py	/^	socketSubset = random.sample(socketList, numConnections)$/;"	v
+type	src/FileIO.h	/^   enum MIMEType type;$/;"	m	struct:fileMetadata	typeref:enum:fileMetadata::MIMEType

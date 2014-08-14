@@ -1,0 +1,133 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BUF_SIZE	src/SelectEngine.h	13;"	d
+BUF_SIZE	src/client.c	24;"	d	file:
+CC	Makefile	/^CC=g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-Wall -Werror -O2$/;"	m
+CSS	src/FileIO.h	/^    CSS,$/;"	e	enum:MIMEType
+CUR_LOG_LEVEL	src/Logger.h	6;"	d
+Close_Socket	src/SelectEngine.cpp	/^int Close_Socket(int sock)$/;"	f	signature:(int sock)
+Close_Socket	src/SelectEngine.h	/^int Close_Socket(int sock);$/;"	p	signature:(int sock)
+DFT_PORT	src/sample_server.cpp	21;"	d	file:
+ECHO_PORT	src/client.c	23;"	d	file:
+ERROR	src/Utility.h	4;"	d
+GIF	src/FileIO.h	/^    GIF,$/;"	e	enum:MIMEType
+HTML	src/FileIO.h	/^    HTML,$/;"	e	enum:MIMEType
+JPEG	src/FileIO.h	/^    JPEG,$/;"	e	enum:MIMEType
+LFLAGS	Makefile	/^LFLAGS=-lssl -lcrypto$/;"	m
+LISTENQ	src/SelectEngine.h	12;"	d
+Liso_error	src/Utility.cpp	/^void Liso_error(char* errmsg)$/;"	f	signature:(char* errmsg)
+Liso_error	src/Utility.h	/^void Liso_error(char* errmsg);$/;"	p	signature:(char* errmsg)
+LogDebug	src/Logger.h	/^    LogDebug = 1,$/;"	e	enum:LogLevel
+LogLevel	src/Logger.h	/^enum LogLevel{$/;"	g
+LogProd	src/Logger.h	/^    LogProd = 2,$/;"	e	enum:LogLevel
+MIMEType	src/FileIO.h	/^enum MIMEType{$/;"	g
+OBJECTS	Makefile	/^OBJECTS = $(OBJ_DIR)\/liso.o \\$/;"	m
+OBJ_DIR	Makefile	/^OBJ_DIR=lib$/;"	m
+OTHER	src/FileIO.h	/^    OTHER,$/;"	e	enum:MIMEType
+Open_ListenSocket	src/SelectEngine.cpp	/^int Open_ListenSocket(int port) $/;"	f	signature:(int port)
+Open_ListenSocket	src/SelectEngine.h	/^int Open_ListenSocket(int port);$/;"	p	signature:(int port)
+PNG	src/FileIO.h	/^    PNG,$/;"	e	enum:MIMEType
+SA	src/SelectEngine.h	/^typedef struct sockaddr SA;$/;"	t	typeref:struct:sockaddr
+SOURCE_DIR	Makefile	/^SOURCE_DIR=src$/;"	m
+SUCCESS	src/Utility.h	5;"	d
+S_OBJ	Makefile	/^S_OBJ = $(OBJ_DIR)\/sample_server.o \\$/;"	m
+SelectPool	src/SelectEngine.h	/^typedef struct SelectPool$/;"	s
+SelectPool::clientfd	src/SelectEngine.h	/^    int clientfd[FD_SETSIZE];$/;"	m	struct:SelectPool	access:public
+SelectPool::maxfd	src/SelectEngine.h	/^    int maxfd;$/;"	m	struct:SelectPool	access:public
+SelectPool::maxi	src/SelectEngine.h	/^    int maxi;$/;"	m	struct:SelectPool	access:public
+SelectPool::nready	src/SelectEngine.h	/^    int nready;$/;"	m	struct:SelectPool	access:public
+SelectPool::read_set	src/SelectEngine.h	/^    fd_set read_set;$/;"	m	struct:SelectPool	access:public
+SelectPool::ready_set	src/SelectEngine.h	/^    fd_set ready_set;$/;"	m	struct:SelectPool	access:public
+VPATH	Makefile	/^VPATH=$(SOURCE)$/;"	m
+_CGIFolder	src/FileIO.h	/^char *_CGIFolder;$/;"	v
+__FILEIO_H_	src/FileIO.h	2;"	d
+__LOGGER_H_	src/Logger.h	2;"	d
+__SELECTENGINE_H_	src/SelectEngine.h	2;"	d
+__UTILITY_H_	src/Utility.h	2;"	d
+_lockFile	src/FileIO.h	/^char *_lockFile;$/;"	v
+_wwwFolder	src/FileIO.h	/^char *_wwwFolder;$/;"	v
+add_client	src/SelectEngine.cpp	/^static void add_client(int connfd, pool_t *pool) $/;"	f	file:	signature:(int connfd, pool_t *pool)
+add_client	src/SelectEngine.cpp	/^static void add_client(int connfd, pool_t *pool);$/;"	p	file:	signature:(int connfd, pool_t *pool)
+byte_cnt	src/SelectEngine.cpp	/^int byte_cnt = 0; $/;"	v
+check_clients	src/SelectEngine.cpp	/^void check_clients(pool_t *pool) $/;"	f	signature:(pool_t *pool)
+check_clients	src/SelectEngine.h	/^void check_clients(pool_t *pool);$/;"	p	signature:(pool_t *pool)
+check_server	src/SelectEngine.cpp	/^void check_server(int listenfd, pool_t *pool)$/;"	f	signature:(int listenfd, pool_t *pool)
+check_server	src/SelectEngine.h	/^void check_server(int listenfd, pool_t *pool);$/;"	p	signature:(int listenfd, pool_t *pool)
+clientfd	src/SelectEngine.h	/^    int clientfd[FD_SETSIZE];$/;"	m	struct:SelectPool	access:public
+createPath	src/FileIO.cpp	/^char *createPath(char *dir, char *path, char *fileName)$/;"	f	signature:(char *dir, char *path, char *fileName)
+createPath	src/FileIO.h	/^char *createPath(char *dir, char *path, char *fileName);$/;"	p	signature:(char *dir, char *path, char *fileName)
+data	cp1_checker.py	/^			data = socketSubset[j].recv(randomLen[j])$/;"	v
+debug	src/Utility.cpp	/^void debug(int n)$/;"	f	signature:(int n)
+debug	src/Utility.h	/^void debug(int n);$/;"	p	signature:(int n)
+endLog	src/Logger.cpp	/^void endLog() $/;"	f	signature:()
+endLog	src/Logger.h	/^void endLog();$/;"	p	signature:()
+fd	src/FileIO.h	/^   FILE *fd;$/;"	m	struct:fileMetadata	access:public
+fileMetadata	src/FileIO.h	/^typedef struct fileMetadata {$/;"	s
+fileMetadata	src/FileIO.h	/^} fileMetadata;$/;"	t	typeref:struct:fileMetadata
+fileMetadata::fd	src/FileIO.h	/^   FILE *fd;$/;"	m	struct:fileMetadata	access:public
+fileMetadata::lastMod	src/FileIO.h	/^   time_t lastMod;$/;"	m	struct:fileMetadata	access:public
+fileMetadata::length	src/FileIO.h	/^   int length;$/;"	m	struct:fileMetadata	access:public
+fileMetadata::path	src/FileIO.h	/^   char *path;$/;"	m	struct:fileMetadata	access:public
+fileMetadata::type	src/FileIO.h	/^   enum MIMEType type;$/;"	m	struct:fileMetadata	typeref:enum:fileMetadata::MIMEType	access:public
+freeFileMeta	src/FileIO.cpp	/^void freeFileMeta(fileMetadata *fm)$/;"	f	signature:(fileMetadata *fm)
+freeFileMeta	src/FileIO.h	/^void freeFileMeta(fileMetadata *);$/;"	p	signature:(fileMetadata *)
+getCGIPath	src/FileIO.cpp	/^char *getCGIPath(){$/;"	f	signature:()
+getCGIPath	src/FileIO.h	/^char *getCGIPath();$/;"	p	signature:()
+getContentLength	src/FileIO.cpp	/^char *getContentLength(fileMetadata *fm)$/;"	f	signature:(fileMetadata *fm)
+getContentLength	src/FileIO.h	/^char* getContentLength(fileMetadata *fm);$/;"	p	signature:(fileMetadata *fm)
+getContentType	src/FileIO.cpp	/^char *getContentType(fileMetadata *fm)$/;"	f	signature:(fileMetadata *fm)
+getContentType	src/FileIO.h	/^char* getContentType(fileMetadata *fm);$/;"	p	signature:(fileMetadata *fm)
+getFilePath	src/FileIO.cpp	/^char *getFilePath(fileMetadata *fm)$/;"	f	signature:(fileMetadata *fm)
+getFilePath	src/FileIO.h	/^char* getFilePath(fileMetadata *fm);$/;"	p	signature:(fileMetadata *fm)
+getFileType	src/FileIO.cpp	/^enum MIMEType getFileType(char *path)$/;"	f	signature:(char *path)
+getFileType	src/FileIO.h	/^enum MIMEType getFileType(char *path);$/;"	p	signature:(char *path)
+getLastMod	src/FileIO.cpp	/^time_t getLastMod(fileMetadata *fm)$/;"	f	signature:(fileMetadata *fm)
+getLastMod	src/FileIO.h	/^time_t getLastMod(fileMetadata *fm);$/;"	p	signature:(fileMetadata *fm)
+getLogger	src/Logger.cpp	/^FILE* getLogger() $/;"	f	signature:()
+getLogger	src/Logger.h	/^FILE* getLogger();$/;"	p	signature:()
+initFileIO	src/FileIO.cpp	/^int initFileIO(char *lockFile, char *wwwFolder, char *CGIFolder)$/;"	f	signature:(char *lockFile, char *wwwFolder, char *CGIFolder)
+initFileIO	src/FileIO.h	/^int initFileIO(char *, char*, char *);$/;"	p	signature:(char *, char*, char *)
+initLogger	src/Logger.cpp	/^int initLogger(String logFileName)$/;"	f	signature:(String logFileName)
+initLogger	src/Logger.h	/^int initLogger(String logFileName);$/;"	p	signature:(String logFileName)
+init_pool	src/SelectEngine.cpp	/^void init_pool(int listenfd, pool_t *pool) $/;"	f	signature:(int listenfd, pool_t *pool)
+init_pool	src/SelectEngine.h	/^void init_pool(int listenfd, pool_t *pool);$/;"	p	signature:(int listenfd, pool_t *pool)
+lastMod	src/FileIO.h	/^   time_t lastMod;$/;"	m	struct:fileMetadata	access:public
+length	src/FileIO.h	/^   int length;$/;"	m	struct:fileMetadata	access:public
+loadFile	src/FileIO.cpp	/^char *loadFile(fileMetadata *fm)$/;"	f	signature:(fileMetadata *fm)
+loadFile	src/FileIO.h	/^char *loadFile(fileMetadata *fm);$/;"	p	signature:(fileMetadata *fm)
+logFILE	src/Logger.cpp	/^static FILE* logFILE;$/;"	v	file:
+logger	src/Logger.cpp	/^void logger(enum LogLevel level, const char *format, ...)$/;"	f	signature:(enum LogLevel level, const char *format, ...)
+logger	src/Logger.h	/^void logger(enum LogLevel, const char *format, ...);$/;"	p	signature:(enum LogLevel, const char *format, ...)
+main	src/client.c	/^int main(int argc, char* argv[])$/;"	f	signature:(int argc, char* argv[])
+main	src/sample_server.cpp	/^int main(int argc, char **argv)$/;"	f	signature:(int argc, char **argv)
+maxfd	src/SelectEngine.h	/^    int maxfd;$/;"	m	struct:SelectPool	access:public
+maxi	src/SelectEngine.h	/^    int maxi;$/;"	m	struct:SelectPool	access:public
+nready	src/SelectEngine.h	/^    int nready;$/;"	m	struct:SelectPool	access:public
+numBytes	cp1_checker.py	/^numBytes = int(sys.argv[5])$/;"	v
+numConnections	cp1_checker.py	/^numConnections = int(sys.argv[6])$/;"	v
+numTrials	cp1_checker.py	/^numTrials = int(sys.argv[3])$/;"	v
+numWritesReads	cp1_checker.py	/^numWritesReads = int(sys.argv[4])$/;"	v
+open_ListenSocket	src/SelectEngine.cpp	/^static int open_ListenSocket(int port) $/;"	f	file:	signature:(int port)
+open_ListenSocket	src/SelectEngine.cpp	/^static int open_ListenSocket(int port);$/;"	p	file:	signature:(int port)
+path	src/FileIO.h	/^   char *path;$/;"	m	struct:fileMetadata	access:public
+pool_t	src/SelectEngine.h	/^} pool_t;$/;"	t	typeref:struct:SelectPool
+prepareFile	src/FileIO.cpp	/^fileMetadata *prepareFile(char *uri, char *mode)$/;"	f	signature:(char *uri, char *mode)
+prepareFile	src/FileIO.h	/^fileMetadata *prepareFile(char *, char*);$/;"	p	signature:(char *, char*)
+randomData	cp1_checker.py	/^	randomData = []$/;"	v
+randomLen	cp1_checker.py	/^	randomLen = []$/;"	v
+random_len	cp1_checker.py	/^			random_len = random.randrange(1, numBytes)$/;"	v
+random_string	cp1_checker.py	/^			random_string = os.urandom(random_len)$/;"	v
+read_set	src/SelectEngine.h	/^    fd_set read_set;$/;"	m	struct:SelectPool	access:public
+ready_set	src/SelectEngine.h	/^    fd_set ready_set;$/;"	m	struct:SelectPool	access:public
+s	cp1_checker.py	/^	s = socket(AF_INET, SOCK_STREAM)$/;"	v
+serverHost	cp1_checker.py	/^serverHost = sys.argv[1].strip()$/;"	v
+serverPort	cp1_checker.py	/^serverPort = int(sys.argv[2])$/;"	v
+socketList	cp1_checker.py	/^socketList = []$/;"	v
+socketSubset	cp1_checker.py	/^	socketSubset = []$/;"	v
+socketSubset	cp1_checker.py	/^	socketSubset = random.sample(socketList, numConnections)$/;"	v
+type	src/FileIO.h	/^   enum MIMEType type;$/;"	m	struct:fileMetadata	typeref:enum:fileMetadata::MIMEType	access:public

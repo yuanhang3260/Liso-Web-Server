@@ -8,9 +8,9 @@
  *
  *  @return void
  */
-void Liso_error(char* errmsg)
+void Liso_error(string errmsg)
 {
-	fprintf(stderr, "ERROR: %s\n", errmsg);
+	fprintf(stderr, "ERROR: %s\n", errmsg.c_str());
 	exit(ERROR);
 }
 

@@ -12,13 +12,28 @@
 #define LISTENQ 10
 #define BUF_SIZE 4096
 
+using namespace std;
+
 typedef struct sockaddr SA;
 
-
-/*----------------------------------------------------------------------------*/
-/** @brief A pool of connected descriptors */
-typedef struct SelectPool
+class SelPool
 {
+/*----------------------------------------------------------------------------*/
+public: 
+    SelPool(int server_port);
+
+    /** pool select */
+    void Select();
+
+    /** check server socket has received new client's connection */
+    void check_server();
+
+    /** check client */
+    void check_clients();
+/*----------------------------------------------------------------------------*/
+private:
+    /** listen fd */
+    int listenfd;
     /** largest descriptor in read_set */
     int maxfd;
     /** set of all active descriptors */      
@@ -31,27 +46,12 @@ typedef struct SelectPool
     int maxi;
     /** set of active descriptors */
     int clientfd[FD_SETSIZE];
-} pool_t;
+    /** counts total bytes received by server */
+    int byte_cnt;
+    
+    /** add a client socket into pool */
+    void add_client(int connfd);
 
-
-/*----------------------------------------------------------------------------*/
-/** init Select Pool */
-void init_pool(int listenfd, pool_t *pool);
-
-/** check server socket has received new client's connection */
-void check_server(int listenfd, pool_t *pool);
-
-/** check client */
-void check_clients(pool_t *pool);
-
-
-/*------------------------- wrapper functions --------------------------------*/
-/** open and return a listening socket on port */
-int Open_ListenSocket(int port);
-
-/** close a socket */
-int Close_Socket(int sock);
-
-
+};
 
 #endif /* __SELECTENGINE_H */

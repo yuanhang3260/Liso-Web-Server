@@ -21,7 +21,7 @@ socketList = []
 
 
 for i in xrange(numConnections):
-	s = socket(AF_INET, SOCK_STREAM)	
+	s = socket(AF_INET, SOCK_STREAM)
 	s.connect((serverHost, serverPort))
 	socketList.append(s)
 
