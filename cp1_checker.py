@@ -34,19 +34,19 @@ for i in xrange(numTrials):
 	for j in xrange(numWritesReads):
 			random_len = random.randrange(1, numBytes)
 			random_string = os.urandom(random_len)
-
+			
             # include num_bytes\n at the front
 			randomData.append(str(random_len)+"\n"+random_string) 
 			randomLen.append(random_len+len(str(random_len))+1) 
 			socketSubset[j].send(randomData[j])
 			#print j
 			#print random_len
-	time.sleep(3);
-	# for j in xrange(numWritesReads):
-	# 		data = socketSubset[j].recv(randomLen[j])
-	# 		if(data != randomData[j]):
-	# 			sys.stderr.write("Error: Data received is not the same as sent! \n")
-	# 			sys.exit(1)
+	
+	for j in xrange(numWritesReads):
+			data = socketSubset[j].recv(randomLen[j])
+			if(data != randomData[j]):
+				sys.stderr.write("Error: Data received is not the same as sent! \n")
+				sys.exit(1)
 
 for i in xrange(numConnections):
 	socketList[i].close()

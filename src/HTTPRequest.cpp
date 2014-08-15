@@ -47,7 +47,7 @@ HTTPRequest::~HTTPRequest()
     free(content);
 
     for (size_t i = 0; i < headers.size(); i++) {
-        delete &(headers[i]);
+        delete headers[i];
     }
     headers.clear();
     
@@ -268,7 +268,8 @@ void HTTPRequest::httpParseLine( char *line,
                 setRequestError(BAD_REQUEST);
             }
             else {
-                headers.push_back(HTTPHeader(key, value));
+                HTTPHeader *header = new HTTPHeader(key, value);
+                headers.push_back(header);
             }
             free(key);
             free(value);
@@ -336,9 +337,9 @@ string HTTPRequest::getHeaderValueByKey(string key)
 {
     for (size_t i = 0; i < headers.size(); i++) 
     {
-        if (headers[i].getKey().compare(key) == 0)
+        if (headers[i]->getKey().compare(key) == 0)
         {
-            return headers[i].getValue();
+            return headers[i]->getValue();
         }
     }
     return "";
@@ -408,7 +409,7 @@ void HTTPRequest::print()
     Logger::log("-URI: %s\n", uri);
     Logger::log("-Version: HTTP/1.%d\n", version);
     for (size_t i = 0; i < headers.size(); i++) {
-        headers[i].print();
+        headers[i]->print();
     }        
 
     if(contentLength > 0) {

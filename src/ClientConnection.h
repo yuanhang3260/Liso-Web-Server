@@ -11,6 +11,8 @@
 
 using namespace std;
 
+#define BUF_SIZE 4096
+
 class ClientConnection
 {
 /*----------------------------------------------------------------------------*/
@@ -36,8 +38,10 @@ public:
     int map(void *data) { return isOpen; }
 
     /* Getters and Setters */
-    int getSocket() { return fd; }
+    int getFd() { return fd; }
+    string getAddr() { return clientAddr; }
     HTTPRequest* getReqest() { return req; }
+    
     char* getReadBuffer_ForRead(ssize_t *size);
     char* getReadBuffer_ForWrite(ssize_t *);
     char* getWriteBuffer_ForRead(ssize_t *);

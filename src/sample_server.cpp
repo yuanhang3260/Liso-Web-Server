@@ -13,6 +13,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <string>
+#include <time.h>
 #include "Utility.h"
 #include "SelectEngine.h"
 #include "Logger.h"
@@ -37,18 +38,19 @@ int main(int argc, char **argv)
     int loop_num = 1;
     while (1)
     {
-        printf("loop %d, selecting ...\n", loop_num++);
-        
+        printf("-------------------------- loop %d -----------------------------\n", loop_num++);
+        //pool.print_clients();
+
         /* Wait for listening/connected descriptor(s) to become ready */
         pool.Select();
         
         /* If listening descriptor ready, add new client to pool */
-        pool.check_server();                
+        pool.check_server();
         
         /* Serve each ready connected client */
         pool.check_clients();
 
-        printf("\n");
+        printf("\n***\n");
     }
 
     /** terminate logging */

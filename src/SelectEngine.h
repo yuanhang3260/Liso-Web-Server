@@ -8,9 +8,9 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include "ClientConnection.h"
 
 #define LISTENQ 10
-#define BUF_SIZE 4096
 
 using namespace std;
 
@@ -30,10 +30,15 @@ public:
 
     /** check client */
     void check_clients();
+
+    /** print clients */
+    void print_clients();
 /*----------------------------------------------------------------------------*/
 private:
     /** listen fd */
     int listenfd;
+    /** server port */
+    int port;
     /** largest descriptor in read_set */
     int maxfd;
     /** set of all active descriptors */      
@@ -42,15 +47,12 @@ private:
     fd_set ready_set;
     /** number of ready descriptors from select */
     int nready;
-    /** highwater index into client array */
-    int maxi;
-    /** set of active descriptors */
-    int clientfd[FD_SETSIZE];
+    /** Client Connections */
+    vector<ClientConnection*> clients;
     /** counts total bytes received by server */
     int byte_cnt;
-    
     /** add a client socket into pool */
-    void add_client(int connfd);
+    void add_client(int connfd, string addr);
 
 };
 

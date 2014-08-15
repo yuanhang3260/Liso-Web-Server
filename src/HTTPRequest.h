@@ -74,7 +74,7 @@ private:
     enum Method method;
     char *uri;
     int version;
-    vector<HTTPHeader> headers;
+    vector<HTTPHeader*> headers;
     
     char *content;
     int contentLength;

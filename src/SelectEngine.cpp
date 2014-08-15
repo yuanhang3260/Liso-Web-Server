@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #include "Utility.h"
 #include "Logger.h"
 #include "Socket.h"
@@ -26,22 +27,16 @@
 SelPool::SelPool(int server_port) 
 {
     /** create listen socket */
-    int port = server_port;
+    port = server_port;
     listenfd = Socket::Open_ListenSocket(port);
     Logger::log("Server socket %d created, listening port %d ...\n", 
                 listenfd, port);
 
-    /* Initially, there are no connected descriptors */
-    int i;
-    maxi = -1;
-    for (i=0; i< FD_SETSIZE; i++) {
-        clientfd[i] = -1;
-    }
-
     /* Initially, listenfd is only member of select read set */
-    maxfd = listenfd;
     FD_ZERO(&read_set);
+    FD_ZERO(&ready_set);
     FD_SET(listenfd, &read_set);
+    maxfd = listenfd;
 }
 
 
@@ -51,6 +46,7 @@ SelPool::SelPool(int server_port)
  */
 void SelPool::Select()
 {
+    printf("Selecting in server and %d clients...\n", clients.size());
     ready_set = read_set;
     nready = select(maxfd + 1, &ready_set, NULL, NULL, NULL);
 }
@@ -70,7 +66,8 @@ void SelPool::check_server()
     if (FD_ISSET(listenfd, &ready_set))
     {
         connfd = accept(listenfd, (SA *)&clientaddr, &clientlen);
-        add_client(connfd); /* adding client fd */
+        string addr(inet_ntoa(clientaddr.sin_addr));
+        add_client(connfd, addr); /* adding client fd */
     }
 }
 
@@ -82,18 +79,19 @@ void SelPool::check_server()
  */
 void SelPool::check_clients() 
 {
-    int i, connfd, nread, nwrite;
+    int connfd, nread, nwrite;
     char buf[BUF_SIZE]; 
 
-    for (i = 0; (i <= maxi) && (nready > 0); i++)
+    vector<ClientConnection*>::iterator it = clients.begin();
+    while ( it != clients.end() )
     {
-        connfd = clientfd[i];
+        connfd = (*it)->getFd();
 
         /* If the descriptor is ready, echo a text line from it */
         if ((connfd > 0) && (FD_ISSET(connfd, &ready_set))) 
         {
             nready--;
-            if ((nread = read(connfd, buf, BUF_SIZE)) >= 0) 
+            if ((nread = read(connfd, buf, BUF_SIZE)) > 0) 
             {
                 byte_cnt += nread;
                 printf("Server received %d bytes on fd %d\n", nread, connfd);
@@ -105,13 +103,33 @@ void SelPool::check_clients()
             }
             else /* EOF detected, remove descriptor from pool */
             {
+                printf("remove client socket %d\n", connfd);
                 Socket::Close_Socket(connfd);
                 FD_CLR(connfd, &read_set);
-                printf("remove client socket %d\n", connfd);
-                clientfd[i] = -1;
+                delete (*it);
+                clients.erase(it);
+                continue;
             }
         }
+        it++;
     }
+}
+
+
+/** @brief print clients
+ *  @return void
+ */
+void SelPool::print_clients()
+{
+    cout << "------- Cliens -------\n";
+    if (clients.size() <= 0) {
+        cout << "No clients in pool\n";
+    }
+    for (size_t i = 0; i < clients.size(); i++) {
+        cout << "fd: " << clients[i]->getFd() << " addr: " << clients[i]->getAddr();
+        cout << endl;
+    }
+    cout << "---------------------\n";
 }
 
 
@@ -122,35 +140,25 @@ void SelPool::check_clients()
  *  @param pool select pool
  *  @return void
  */
-void SelPool::add_client(int connfd) 
+void SelPool::add_client(int connfd, string addr)
 {
-    int i;
     nready--;
-    for (i = 0; i < FD_SETSIZE; i++)  /* Find an available slot */
-    {
-        if (clientfd[i] < 0) 
-        {
-            printf("adding client socket %d ...\n", connfd);
-            /* Add connected descriptor to the pool */
-            clientfd[i] = connfd;
+    
+    printf("adding client socket %d ...\n", connfd);
 
-            /* Add the descriptor to descriptor set */
-            FD_SET(connfd, &read_set);
+    /* Add the descriptor to descriptor set */
+    if (connfd > maxfd) {
+        maxfd = connfd;
+    }
+    FD_SET(connfd, &read_set);
 
-            /* Update max descriptor and pool highwater mark */
-            if (connfd > maxfd){
-                maxfd = connfd;
-            }
-            
-            if (i > maxi) {
-                maxi = i;
-            }
-            
-            break;
-        }
-    }
-    /* Can't find an empty slot */
-    if (i == FD_SETSIZE) { /* TODO */
-        fprintf(stderr, "Error: Too many clients\n");
-    }
+    /* create a new ClientConnection Object and add it to client list */
+    ClientConnection *newClient = 
+                     new ClientConnection(connfd,
+                                          BUF_SIZE,
+                                          port,
+                                          addr,
+                                          ClientConnection::T_HTTP);
+    clients.push_back(newClient);
+    //cout << "added\n";
 }

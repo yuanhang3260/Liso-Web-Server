@@ -39,7 +39,7 @@ ClientConnection::ClientConnection( int connFd,
     req = new HTTPRequest(serverPort, clientAddr.c_str(), 
                           (connType == T_HTTPS) ? 1 : 0 );
     //res = NULL;
-
+    
     CGIout = -1;
 }
 
@@ -47,6 +47,7 @@ ClientConnection::ClientConnection( int connFd,
 /** @brief Class ClientConnection Destructor */
 ClientConnection::~ClientConnection()
 {
+    printf("deleting Client %d\n", fd);
     // if(isHTTPS()) {
     //     SSL_shutdown(connSSL);
     //     SSL_free(connSSL);
@@ -54,9 +55,11 @@ ClientConnection::~ClientConnection()
     close(fd);
     if (readBuffer != NULL) {
         delete[] readBuffer;
+        readBuffer = NULL;
     }
     if (writeBuffer != NULL) {
         delete[] writeBuffer;
+        writeBuffer = NULL;
     }
     
     req->~HTTPRequest();
