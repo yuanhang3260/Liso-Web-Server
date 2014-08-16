@@ -68,6 +68,14 @@ public:
 
     /** print the http request */
     void print();
+
+    enum Method getMethod() { return method; }
+    char* getURI() { return uri; }
+    int getVersion() { return version; }
+    vector<HTTPHeader*> getHeaders() {  return headers; }
+    enum State getState() { return curState; }
+    int getStatusCode() { return statusCode; }
+    string getHeaderValueByKey(string key);
     
 /*----------------------------------------------------------------------------*/
 private:
@@ -93,7 +101,6 @@ private:
     void httpParseLine(char *, ssize_t , ssize_t *);
     void setRequestError(enum StatusCode );
 
-    string getHeaderValueByKey(string key);
     int isValidRequest();
     
     //void buildENVP();

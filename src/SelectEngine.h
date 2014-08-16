@@ -33,6 +33,19 @@ public:
 
     /** print clients */
     void print_clients();
+
+    /***** Connection Handlers *****/
+    /** read Handler */
+    void readHandler(ClientConnection *client);
+    /** pipe Handler */
+    void pipeHandler(ClientConnection *client);
+    /** process Handler */
+    void processHandler(ClientConnection *client);
+    /** write Handler */
+    void writeHandler(ClientConnection *client);
+    /** close Handler */
+    int closeHandler(ClientConnection *client);
+
 /*----------------------------------------------------------------------------*/
 private:
     /** listen fd */
@@ -51,6 +64,7 @@ private:
     vector<ClientConnection*> clients;
     /** counts total bytes received by server */
     int byte_cnt;
+
     /** add a client socket into pool */
     void add_client(int connfd, string addr);
 

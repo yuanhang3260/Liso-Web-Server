@@ -24,6 +24,8 @@ S_OBJ = $(OBJ_DIR)/sample_server.o \
         $(OBJ_DIR)/ClientConnection.o \
         $(OBJ_DIR)/HTTPRequest.o \
         $(OBJ_DIR)/HTTPHeader.o \
+        $(OBJ_DIR)/HTTPResponse.o \
+        $(OBJ_DIR)/FileIO.o
 
 
 LFLAGS=-lssl -lcrypto
@@ -39,7 +41,7 @@ client: src/client.c
 sample_server: $(S_OBJ)
 	$(CC) $(S_OBJ) -o $@ $(CFLAGS)
 
-$(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
+$(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(SOURCE_DIR)/%.h
 	$(CC) -c -o $@ $< $(CFLAGS) 
 
 clean:

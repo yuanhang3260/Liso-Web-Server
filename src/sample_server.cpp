@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 {
     /** initialize logger */
     Logger logger("./log.txt");
-    Logger::log("Start Logging ...\n\n");
+    Logger::log("Start Logging *******\n\n");
 
     /* init select pool - create pool and init listen socket*/
     SelPool pool((argc > 1? atoi(argv[1]) : DFT_PORT));
@@ -38,6 +38,7 @@ int main(int argc, char **argv)
     int loop_num = 1;
     while (1)
     {
+        sleep(1);
         printf("-------------------------- loop %d -----------------------------\n", loop_num++);
         //pool.print_clients();
 

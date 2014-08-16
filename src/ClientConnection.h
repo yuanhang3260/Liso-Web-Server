@@ -40,14 +40,15 @@ public:
     /* Getters and Setters */
     int getFd() { return fd; }
     string getAddr() { return clientAddr; }
-    HTTPRequest* getReqest() { return req; }
+    HTTPRequest* getRequest() { return req; }
     
     char* getReadBuffer_ForRead(ssize_t *size);
     char* getReadBuffer_ForWrite(ssize_t *);
     char* getWriteBuffer_ForRead(ssize_t *);
     char* getWriteBuffer_ForWrite(ssize_t *);
 
-    void setClose() { isOpen = 0; }
+    int isClosed() { return !isOpen; }
+    void setClosed() { isOpen = 0; }
     
     void addReadSize(ssize_t readSize) { curReadSize += readSize; }
     void removeReadSize(ssize_t);
@@ -59,7 +60,7 @@ public:
     //void setHTTPS(SSL_CTX *);
 
     int isHTTP() { return connType == T_HTTP; }
-    //int isHTTPS() { return connType == T_HTTPS; }
+    int isHTTPS() { return connType == T_HTTPS; }
 
     //int hasAcceptedSSL() { return acceptedSSL == 1; }
     //void setAcceptedSSL() { acceptedSSL = 1; };
@@ -84,7 +85,7 @@ private:
     char *readBuffer;
     char *writeBuffer;
     HTTPRequest *req;
-    //responseObj *res;
+    responseObj *res;
     int CGIout;
     //SSL *connSSL;
     //int acceptedSSL;

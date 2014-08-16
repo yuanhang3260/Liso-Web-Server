@@ -3,48 +3,58 @@
 
 using namespace std;
 
-char *_lockFile;
-char *_wwwFolder;
-char *_CGIFolder;
 
-enum MIMEType{
-    HTML,
-    CSS,
-    JPEG,
-    PNG,
-    GIF,
-    OTHER,
+class FileIO 
+{
+/*----------------------------------------------------------------------------*/
+public:
+    enum MIMEType {
+        HTML,
+        CSS,
+        JPEG,
+        PNG,
+        GIF,
+        OTHER,
+    };
+
+    static string lockFile;
+    static string wwwFolder;
+    static string CGIFolder;
+    
+    static void initFileIO(string, string, string);
+
+    /** Constructor and Destructor */
+    FileIO(string uri);
+    ~FileIO();
+
+    char *loadFile(fileMetadata *fm);
+
+    int getFile() { return fd; }
+    string getPath() { return path; }
+    string getType();
+    int getSize() { return length; }
+    time_t getLastMod() { return lastMod; }
+
+    string getCGIPath() { return CGIFolder; }
+    string getWWWFolder() { return wwwFolder; }
+    string getLockFile() { return lockFile; }
+
+/*----------------------------------------------------------------------------*/
+private:
+    int fd;
+    string path;
+    enum MIMEType type;
+    int length;
+    time_t lastMod;
+
+    string createPath(string dir, string uri, string fileName);
+    enum MIMEType getFileTypeFromName(string path);
 };
 
-typedef struct fileMetadata {
-   FILE *fd;
-   char *path;
-   enum MIMEType type;
-   int length;
-   time_t lastMod;
-} fileMetadata;
 
 
 
 
-/* Public methods */
-int initFileIO(char *, char*, char *);
-
-fileMetadata *prepareFile(char *, char*);
-void freeFileMeta(fileMetadata *);
-char *loadFile(fileMetadata *fm);
-
-char* getContentType(fileMetadata *fm);
-char* getFilePath(fileMetadata *fm);
-char* getContentLength(fileMetadata *fm);
-time_t getLastMod(fileMetadata *fm);
-
-char *getCGIPath();
-
-
-/* Private methods */
-char *createPath(char *dir, char *path, char *fileName);
-enum MIMEType getFileType(char *path);
 
 
 

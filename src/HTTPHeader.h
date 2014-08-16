@@ -20,7 +20,7 @@ public:
 
 	/** print key-value pair */
 	void print() {
-		Logger::log("header -[%s: %s]\n", key.c_str(), value.c_str());
+		printf("[header]  %s: %s\n", key.c_str(), value.c_str());
 	}
 
 	int compare(HTTPHeader *h2) { return key.compare(h2->key); }
