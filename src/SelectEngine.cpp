@@ -164,30 +164,6 @@ void SelPool::check_clients()
                 break;
             }
         }
-
-        // ----------------------------- Echo Server ------------------------------ //
-        // if ( FD_ISSET(connfd, &read_set) && (connfd > 0) )
-        // {
-        //     if ((nread = read(connfd, buf, BUF_SIZE)) > 0) 
-        //     {
-        //         byte_cnt += nread;
-        //         printf("Server received %d bytes on fd %d\n", nread, connfd);
-                
-        //         nwrite = write(connfd, buf, nread);
-        //         if (nwrite < 0) {
-        //             fprintf(stderr, "Error: write client socket error\n");
-        //         }
-        //     }
-        //     else /* EOF detected, remove descriptor from pool */
-        //     {
-        //         printf("remove client socket %d\n", connfd);
-        //         Socket::Close_Socket(connfd);
-        //         FD_CLR(connfd, &read_set);
-        //         delete (*it);
-        //         clients.erase(it);
-        //         continue;
-        //     }
-        // }
         it++;
     }
 }
