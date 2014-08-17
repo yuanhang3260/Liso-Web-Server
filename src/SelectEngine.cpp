@@ -60,12 +60,12 @@ void SelPool::Select()
 
         if( client->isEmpty() && client->isReadable())
         {
-            printf("adding %d to read_set\n", connFd);
+            printf("put %d to read_set\n", connFd);
             FD_SET(connFd, &read_set);
         }
         if( client->isWritable() )
         {
-            printf("adding %d to write_set\n", connFd);
+            printf("put %d to write_set\n", connFd);
             FD_SET(connFd, &write_set);
         }
         it++;
@@ -483,6 +483,7 @@ void SelPool::add_client(int connfd, string addr)
                                           port,
                                           addr,
                                           ClientConnection::T_HTTP);
+    printf("BUF_SIZE = %d\n", BUF_SIZE);
     clients.push_back(newClient);
     //cout << "added\n";
 }

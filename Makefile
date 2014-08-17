@@ -8,6 +8,7 @@
 CC=g++
 CFLAGS=-Wall -Werror -O2
 SOURCE_DIR=src
+INC_DIR=include
 OBJ_DIR=lib
 VPATH=$(SOURCE)
 OBJECTS = $(OBJ_DIR)/liso.o \
@@ -41,8 +42,8 @@ client: src/client.c
 sample_server: $(S_OBJ)
 	$(CC) $(S_OBJ) -o $@ $(CFLAGS)
 
-$(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(SOURCE_DIR)/%.h
-	$(CC) -c -o $@ $< $(CFLAGS) 
+$(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp $(INC_DIR)/%.h
+	$(CC) -c -o $@ $< $(CFLAGS) -I./$(INC_DIR)
 
 clean:
 	rm -rf lisod client sample_server
