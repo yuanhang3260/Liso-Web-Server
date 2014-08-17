@@ -19,7 +19,8 @@ HTTPRequest::HTTPRequest(int port, const char *addr, int https)
     contentLength = 0;
     
     statusCode = 0;
-    curState = requestLine;
+    state = Init;
+    parseStatus = requestLine;
     
     isNew = 1;
     isCGI = -1;
@@ -79,21 +80,20 @@ char* HTTPRequest::nextToken(char *buf, char *bufEnd)
 
 
 /** @brief parse request */
-enum HTTPRequest::Status 
-HTTPRequest::httpParse(char *bufPtr, ssize_t *size, int full)
+void HTTPRequest::httpParse(char *bufPtr, ssize_t *size, int full)
 {
-    if(curState == requestDone) 
-    {
-        *size = 0;
-        printf("Existing ReqObj. No Parsing Needed\n");
-        return Parsed;
-    }
-    if(curState == requestError)
-    {
-        *size = 0;
-        printf("RequestError. No Parsing Needed\n");
-        return ParseError;
-    }
+    // if(state == ParsedCorrect) 
+    // {
+    //     *size = 0;
+    //     printf("Existing Passed Request. No Parsing Needed\n");
+    // }
+    // if(state == ParsedError)
+    // {
+    //     *size = 0;
+    //     printf("Existing Parsed Error. No Parsing Needed\n");
+    // }
+    /* reset parse status */
+    parseStatus = requestLine;
 
     ssize_t curSize = *size;
     char *bufEnd = bufPtr + curSize;
@@ -103,11 +103,12 @@ HTTPRequest::httpParse(char *bufPtr, ssize_t *size, int full)
     
     /* Begin Parsing in a state machine */
     printf("Parsing %d bytes: Start ...\n", *size);
+    //printf("%s\n", bufPtr);
     while(1)
     {
-        if(curState == contentLine) {
+        if(parseStatus == contentLine) {
             nextPtr = bufEnd;
-        } 
+        }
         else 
         {
             /* get next line in the read buffer */
@@ -124,7 +125,7 @@ HTTPRequest::httpParse(char *bufPtr, ssize_t *size, int full)
         }
         if(nextPtr != NULL) 
         {
-            parsedSize = (size_t)(nextPtr - thisPtr);
+            parsedSize = (ssize_t)(nextPtr - thisPtr);
             
             /* httpParseLine is a state machine switching in states: 
              * [requestLine], [headerLine], [content], [requestDone], [requestError]
@@ -134,7 +135,7 @@ HTTPRequest::httpParse(char *bufPtr, ssize_t *size, int full)
         else {
             break;
         }
-        if(curState == requestError ) {
+        if(parseStatus == requestError ) {
             break;
         }
         /* Prepare for next line */
@@ -142,11 +143,12 @@ HTTPRequest::httpParse(char *bufPtr, ssize_t *size, int full)
         if(thisPtr >= bufEnd) {
             break;
         }
-        if(curState == requestDone) {
+        if(parseStatus == requestDone) {
             break;
         }
     }
-    /* clean up parsed buffer */
+
+    /* refresh parsed buffer */
     if(thisPtr < bufEnd) {
         *size = thisPtr - (bufEnd - curSize);
     }
@@ -155,24 +157,23 @@ HTTPRequest::httpParse(char *bufPtr, ssize_t *size, int full)
     }
     
     /* Set return status */
-    if(curState == requestError)
+    if(parseStatus == requestError)
     {
         printf("Parsing result: Error\n");
-        return ParseError;
+        state = ParsedError;
     } 
-    else if(curState == requestDone) 
+    else if(parseStatus == requestDone) 
     {
         printf("Parsing result: Done\n");
         /* print parsed result */
-        print();
-        return Parsed;
-    } 
+        //print();
+        state = ParsedCorrect;
+    }
     else
     {
         printf("Parsing result: Parsing .. \n");
-        return Parsing;
+        state = Parsing;
     }
-
 
 }
 
@@ -189,13 +190,14 @@ void HTTPRequest::httpParseLine( char *_line,
         {POST, "POST"},
     };
 
-    char *line = new char[(size_t)lineSize];
-    strncpy(line, _line, (size_t)lineSize);
+    char *line = new char[(ssize_t)lineSize];
+    strncpy(line, _line, (ssize_t)lineSize);
+    printf("[Parse line]: %s", line);
 
-    switch(curState) {
+    switch (parseStatus) {
     case requestLine: 
     {
-        printf("[requst Line] - ");
+        //printf("[requst Line] - ");
         char* _method = new char[lineSize + 1];
         char* _uri = new char[lineSize + 1];
         int version1, version2;
@@ -209,8 +211,8 @@ void HTTPRequest::httpParseLine( char *_line,
         }
         else
         {
-            printf("Method = %s, URI = %s, Version = %d\n",
-                   _method, _uri, version2);
+            // printf("Method = %s, URI = %s, Version = %d\n",
+            //        _method, _uri, version2);
             int numMethods = sizeof(methodTable) / sizeof(methodEntry);
             for(int i = 0; i < numMethods; i++) 
             {
@@ -230,32 +232,32 @@ void HTTPRequest::httpParseLine( char *_line,
                 uri = new char[strlen(_uri) + 1];
                 strncpy(uri, _uri, strlen(_uri) + 1);
                 version = version2;
-                curState = headerLine;
+                parseStatus = headerLine;
             }
         }
         /* Clean up */
         delete[] _method;
-        if(curState == requestError) {
+        if(parseStatus == requestError) {
             delete[] uri;
         }
     }
     break;
     case headerLine:
     {
-        printf("[header Line] - ");
+        //printf("[header Line] - ");
         if(lineSize == 2 && line[0] == '\r' && line[1] == '\n') 
         {
             printf("Header Close line\n");
             if(isValidRequest()) 
             {
                 if(method == GET || method == HEAD) {
-                    curState = requestDone;
+                    parseStatus = requestDone;
                 } 
                 else if(method == POST) {
-                    curState = contentLine;
+                    parseStatus = contentLine;
                 } 
                 else {
-                    curState = requestError;
+                    parseStatus = requestError;
                 }
             }
             else {
@@ -273,28 +275,29 @@ void HTTPRequest::httpParseLine( char *_line,
                 HTTPHeader *header = new HTTPHeader(key, value);
                 headers.push_back(header);
             }
-            printf("%s: %s\n", key, value);
+            //printf("%s: %s\n", key, value);
             free(key);
             free(value);
         }
     }
     break;
     case contentLine: {
+        //printf("[content Line] - \n");
         // char *lengthStr = getValueByKey(header, "content-length");
         // int length = atoi(lengthStr);
         // int curLength = contentLength;
         // if(curLength == length) {
-        //     curState = requestDone;
+        //     parseStatus = requestDone;
         // }
         // if(length - curLength <= lineSize) 
         // {
         //     printf("Stat content length=%d, curLength=%d, lineSize=%d \n", length, curLength, lineSize);
-        //     size_t readSize = length - curLength;
+        //     ssize_t readSize = length - curLength;
         //     content = realloc(content, length + 1);
         //     content[length] = '\0';
         //     memcpy(content + curLength, line, readSize);
         //     contentLength = length;
-        //     curState = requestDone;
+        //     state = requestDone;
         //     *parsedSize = readSize;
         //     printf("Got content %d done\n", readSize);
         // } 
@@ -304,14 +307,19 @@ void HTTPRequest::httpParseLine( char *_line,
         //     content[curLength+lineSize] = '\0';
         //     memcpy(content + curLength, line, lineSize);
         //     contentLength = curLength + lineSize;
-        //     curState = content;
+        //     state = content;
         //     printf("Got content %d in middle\n", lineSize);
         // }
-        // break;
+        break;
     }
     case requestError:
+        //printf("[request Error] - \n");
+        break;
     case requestDone:
+        //printf("[request done] - \n");
+        break;
     default:
+        //printf("[Unknown] - \n");
         break;
     }
     delete[] line;
@@ -356,7 +364,7 @@ string HTTPRequest::getHeaderValueByKey(string key)
 // TODO: return ErrorCode or 0 if correct
 int HTTPRequest::isValidRequest()
 {
-    if(curState == requestError) {
+    if(parseStatus == requestError) {
         return 0;
     }
     switch(method) 
@@ -386,7 +394,7 @@ int HTTPRequest::isValidRequest()
 /** set this request status as error */
 void HTTPRequest::setRequestError(enum StatusCode code)
 {
-    curState = requestError;
+    parseStatus = requestError;
     statusCode = (int)code;
     printf("Parse Error with code = %d\n", (int)code);
 }

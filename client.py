@@ -25,7 +25,7 @@ for i in xrange(numConnections):
 	s.connect((serverHost, serverPort))
 	socketList.append(s)
 
-RESPONSE = 'GET /static_site/index.html HTTP/1.1\r\n\
+RESPONSE = 'GET /style.css HTTP/1.1\r\n\
 Host: localhost\r\n\
 Connection: keep-alive\r\n\
 Cache-Control: no-cache\r\n\
@@ -44,14 +44,12 @@ for i in xrange(numTrials):
 			randomData.append(str(random_len)+"\n"+random_string) 
 			randomLen.append(random_len+len(str(random_len))+1) 
 			socketSubset[j].send(RESPONSE)
-			#print j
+			#printj
 			#print random_len
 	
 	for j in xrange(numWritesReads):
-			data = socketSubset[j].recv(randomLen[j])
-			if(data != randomData[j]):
-				sys.stderr.write("Error: Data received is not the same as sent! \n")
-				sys.exit(1)
+			data = socketSubset[j].recv(4096*8)
+			print data
 
 for i in xrange(numConnections):
 	socketList[i].close()

@@ -1,6 +1,11 @@
 #ifndef __FILEIO_H_
 #define __FILEIO_H_ 
 
+
+#include <time.h>
+#include <string>
+#include <iostream>
+
 using namespace std;
 
 
@@ -27,7 +32,7 @@ public:
     FileIO(string uri);
     ~FileIO();
 
-    char *loadFile(fileMetadata *fm);
+    char* loadFile();
 
     int getFile() { return fd; }
     string getPath() { return path; }
@@ -48,7 +53,7 @@ private:
     time_t lastMod;
 
     string createPath(string dir, string uri, string fileName);
-    enum MIMEType getFileTypeFromName(string path);
+    enum MIMEType getFileTypeFromName();
 };
 
 

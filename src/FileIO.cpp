@@ -6,31 +6,33 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
 #include <sys/mman.h>
 #include "FileIO.h"
 #include "Logger.h"
 
+string FileIO::lockFile;
+string FileIO::wwwFolder;
+string FileIO::CGIFolder;
 
 /** @brief init FileIO */
-void FileIO::initFileIO(string _lockFile, string _wwwFolder, string _CGIFolder);
+void FileIO::initFileIO(string _lockFile, string _wwwFolder, string _CGIFolder)
 {
-    lockFile = _lockFile;
-    wwwFolder = _wwwFolder;
-    CGIFolder = _CGIFolder;
+    FileIO::lockFile = _lockFile;
+    FileIO::wwwFolder = _wwwFolder;
+    FileIO::CGIFolder = _CGIFolder;
 }
 
 
 /** @brief Class FileIO Constructor */
 FileIO::FileIO(string uri)
 {
-    string path;
-    struct stat fileStat;
-    
     if(uri.at(uri.length() - 1) == '/') {
-        path = createPath(wwwFolder, uri, "index.html");
+        path = createPath(FileIO::wwwFolder, uri, "index.html");
     }
     else {
-        path = createPath(wwwFolder, uri, "");
+        path = createPath(FileIO::wwwFolder, uri, "");
     }
     
     cout << "[File Path]: " << path << endl;
@@ -52,12 +54,12 @@ char* FileIO::loadFile()
     }
 
     fd = open(path.c_str(), O_RDONLY);
-    if(fd == NULL) 
+    if(fd < 0) 
     {
         cout << "Error: Open file " << path << " failed\n";
         return NULL;
     }
-    type = getFileTypeFromName(path);
+    type = getFileTypeFromName();
     lastMod = fileStat.st_mtime;
     length = fileStat.st_size;
     
@@ -95,19 +97,19 @@ string FileIO::getType()
 
 
 /* Private methods */
-enum MIMEType FileIO::getFileTypeFromName(string path)
+enum FileIO::MIMEType FileIO::getFileTypeFromName()
 {
     if(path.length() < 4) {
         return OTHER;
     }
     else
     {
-        size_t pos = str.find_last_of(".");
+        size_t pos = path.find_last_of(".");
         if (pos == string::npos) {
             return OTHER;
         }
 
-        type = str.substr(found + 1);
+        string type = path.substr(pos + 1);
         if (type.compare("html") == 0) {
             return HTML;
         }

@@ -17,22 +17,29 @@ ClientConnection::ClientConnection( int connFd,
                                     ssize_t bufferSize,
                                     int port,
                                     string addr,
-                                    enum HTTPType connType)
+                                    enum HTTPType _connType)
 {
     fd = connFd;
     serverPort = port;
     clientAddr = addr;
     
-    connType = connType;
+    connType = _connType;
     //acceptedSSL = 0;
     curReadSize = 0;
     maxReadSize = bufferSize;
     readBuffer = (bufferSize > 0) ? (new char[bufferSize]) : NULL;
+    if (bufferSize > 0) {
+        bzero(readBuffer, bufferSize);
+    }
     
     curWriteSize = 0;
     maxWriteSize = bufferSize;
     writeBuffer = (bufferSize > 0) ? (new char[bufferSize]) : NULL;
-    wbStatus = initRes;
+    if (bufferSize > 0) {
+        bzero(writeBuffer, bufferSize);
+    }
+
+    state = Ready_ForRead;
 
     isOpen = 1;
     
@@ -62,7 +69,12 @@ ClientConnection::~ClientConnection()
         writeBuffer = NULL;
     }
     
-    req->~HTTPRequest();
+    if (res != NULL) {
+        delete res;
+    }
+    if (req != NULL) {
+        delete res;
+    }
 
     //res = NULL;
     
@@ -121,24 +133,6 @@ void ClientConnection::removeWriteSize(ssize_t writeSize)
 }
 
 
-/** if it's an empty */
-int ClientConnection::isEmpty()
-{
-    switch(wbStatus)
-    {
-        case initRes:
-            return curWriteSize == 0;
-        case writingRes:
-        case lastRes:
-            return 0;
-        case doneRes:
-            return 1;
-        default:
-            return -1;
-    }
-}
-
-
 // void setConnObjHTTPS(SSL_CTX *ctx)
 // {
 //     /* Set non-blocking */
@@ -159,5 +153,5 @@ void ClientConnection::cleanCGI()
         close(CGIout);
     }
     CGIout = -1;
-    wbStatus = lastRes;
+    //wbStatus = lastRes;
 };

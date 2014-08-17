@@ -8,20 +8,21 @@
 #include <string.h>
 #include <fcntl.h>
 #include "HTTPRequest.h"
+#include "HTTPResponse.h"
 
 using namespace std;
 
-#define BUF_SIZE 4096
+#define BUF_SIZE 16384
 
 class ClientConnection
 {
 /*----------------------------------------------------------------------------*/
 public:
-    enum writeStatus {
-        initRes,
-        writingRes,
-        lastRes,
-        doneRes,
+    enum State {
+        Ready_ForRead,
+        Request_Parsed,
+        Writing_Response,
+        Done_Response,
     };
 
     enum HTTPType {
@@ -41,6 +42,11 @@ public:
     int getFd() { return fd; }
     string getAddr() { return clientAddr; }
     HTTPRequest* getRequest() { return req; }
+    HTTPResponse* getResponse() { return res; }
+    void deleteResponse() { delete res; res = NULL; }
+
+    enum State getState() { return state; }
+    void setState(enum State _state) { state = _state; }
     
     char* getReadBuffer_ForRead(ssize_t *size);
     char* getReadBuffer_ForWrite(ssize_t *);
@@ -65,9 +71,14 @@ public:
     //int hasAcceptedSSL() { return acceptedSSL == 1; }
     //void setAcceptedSSL() { acceptedSSL = 1; };
     int isFull() { return curReadSize == maxReadSize; }
-    int isEmpty();
+    int isEmpty() { return curReadSize == 0; }
+    int isReadable() { return state == Ready_ForRead; }
+    int isWritable() { return state == Writing_Response; }
+
     int isNew() { return curReadSize > 0; }
 
+    /** create a new response */
+    HTTPResponse* createResponse() { return (res = new HTTPResponse()); }
     void cleanCGI();
 
 /*----------------------------------------------------------------------------*/
@@ -81,11 +92,11 @@ private:
     ssize_t curWriteSize;
     ssize_t maxWriteSize;
     int isOpen;
-    enum writeStatus wbStatus;
+    enum State state;
     char *readBuffer;
     char *writeBuffer;
     HTTPRequest *req;
-    responseObj *res;
+    HTTPResponse *res;
     int CGIout;
     //SSL *connSSL;
     //int acceptedSSL;

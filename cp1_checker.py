@@ -27,6 +27,7 @@ for i in xrange(numConnections):
 
 
 for i in xrange(numTrials):
+	print i
 	socketSubset = []
 	randomData = []
 	randomLen = []

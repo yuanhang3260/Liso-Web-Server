@@ -18,11 +18,12 @@ class HTTPRequest
 {
 /*----------------------------------------------------------------------------*/
 public:
-    /** @brief parse status */
-    enum Status {
+    /** @brief State */
+    enum State {
+        Init,
         Parsing,
-        Parsed,
-        ParseError,
+        ParsedCorrect,
+        ParsedError,
     };
 
     /** @brief request status code */
@@ -46,7 +47,7 @@ public:
     };
 
     /** parser state machine */
-    enum State {
+    enum ParseState {
         requestLine,
         headerLine,
         contentLine,
@@ -60,7 +61,7 @@ public:
     ~HTTPRequest();
 
     /** parse http request */
-    enum Status httpParse(char *bufPtr, ssize_t *size, int full );
+    void httpParse(char *bufPtr, ssize_t *size, int full );
     /** is a CGI request */
     //int isCGIRequest();
     /** is a new request */
@@ -73,9 +74,11 @@ public:
     char* getURI() { return uri; }
     int getVersion() { return version; }
     vector<HTTPHeader*> getHeaders() {  return headers; }
-    enum State getState() { return curState; }
+    enum State getState() { return state; }
     int getStatusCode() { return statusCode; }
     string getHeaderValueByKey(string key);
+
+    void setParseStatus(enum ParseState _parseStatus) { parseStatus = _parseStatus; }
     
 /*----------------------------------------------------------------------------*/
 private:
@@ -88,7 +91,8 @@ private:
     int contentLength;
     
     int statusCode;
-    enum State curState;
+    enum State state;
+    enum ParseState parseStatus;
     
     int isNew;
     int isCGI;

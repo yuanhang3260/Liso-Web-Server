@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include "HTTPRequest.h"
+#include "FileIO.h"
 
 using namespace std;
 
@@ -39,9 +40,9 @@ private:
     /* HTTP Response */
     
     string statusLine;
-    vector<HTTPHeaders*> headers;
-    // fileMetadata *fileMeta;
-
+    vector<HTTPHeader*> headers;
+    FileIO *file;
+    
     //Write Buffer related
     char *headerBuffer;
     char *fileBuffer;
@@ -53,7 +54,7 @@ private:
     /* CGI Response */
     int CGIout;
     pid_t pid;
-
+    
     int close;
 
     /* Private methods */
@@ -61,7 +62,7 @@ private:
     //char **fillENVP(HTTPRequest *);
     string getHTTPDate(time_t);
     int addStatusLine(HTTPRequest*);
-    void printResponse(HTTPRequest*);
+    void print();
 
 };
 

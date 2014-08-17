@@ -18,6 +18,7 @@
 #include "SelectEngine.h"
 #include "Logger.h"
 #include "FileIO.h"
+#include "sample_server.h"
 
 #define DFT_PORT 9090
 
@@ -33,23 +34,26 @@ int main(int argc, char **argv)
     /* init select pool - create pool and init listen socket*/
     SelPool pool((argc > 1? atoi(argv[1]) : DFT_PORT));
     Logger::log("Select Pool initialized with %d slots ...\n\n", FD_SETSIZE);
+
+    /* init FileIO */
+    FileIO::initFileIO("./lockfile", "./static_site", "./CGI");
     
     /* begin loop */
     int loop_num = 1;
     while (1)
     {
-        sleep(1);
+        //sleep(1);
         printf("-------------------------- loop %d -----------------------------\n", loop_num++);
         //pool.print_clients();
 
         /* Wait for listening/connected descriptor(s) to become ready */
         pool.Select();
         
-        /* If listening descriptor ready, add new client to pool */
-        pool.check_server();
-        
         /* Serve each ready connected client */
         pool.check_clients();
+
+        /* If listening descriptor ready, add new client to pool */
+        pool.check_server();
 
         printf("\n***\n");
     }

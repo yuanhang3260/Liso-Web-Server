@@ -3,6 +3,7 @@
  *  @bug No bugs found yet
  */
 
+#include <sstream>
 #include "HTTPResponse.h"
 
 
@@ -10,8 +11,8 @@
 HTTPResponse::HTTPResponse()
 {
     isCGI = 0;
-    statusLine = NULL;
-    //fileMeta = NULL;
+    statusLine = "";
+    file = NULL;
     headerBuffer = NULL;
     fileBuffer = NULL;
     headerPtr = 0;
@@ -36,16 +37,16 @@ HTTPResponse::~HTTPResponse()
     }
     headers.clear();
 
-    if(pid != 0) 
-    {
-        int status;
-        if(-1 == waitpid(pid, &status, 0)) {
-            printf("Error reaping child\n");
-        } 
-        else {
-            printf("-PID");
-        }
-    }
+    // if(pid != 0) 
+    // {
+    //     int status;
+    //     if(-1 == waitpid(pid, &status, 0)) {
+    //         printf("Error reaping child\n");
+    //     } 
+    //     else {
+    //         printf("-PID");
+    //     }
+    // }
 }
 
 
@@ -86,12 +87,12 @@ void HTTPResponse::buildHTTPResponse(HTTPRequest *req)
 
             case HTTPRequest::GET :
                 printf("Load file for GET\n");
-                fileBuffer = loadFile(fileMeta);
-                maxFilePtr = fileMeta->length;
+                fileBuffer = file->loadFile();
+                maxFilePtr = file->getSize();
 
             case HTTPRequest::HEAD : {
-                //Connection
-                string val = req->getValueByKey("Connection");
+                /* Connection */
+                string val = req->getHeaderValueByKey("Connection");
                 if(val.compare("close") == 0) {
                     headers.push_back( new HTTPHeader("Connection", "close") );
                     close = 1;
@@ -99,15 +100,17 @@ void HTTPResponse::buildHTTPResponse(HTTPRequest *req)
                 else {
                     headers.push_back( new HTTPHeader("Connection", "keep-alive") );
                 }
-                //Content length and type
-                headers.push_back( new HTTPHeader("Content-length", 
-                                                  getContentLength(fileMeta)) );
+                /* Content size */
+                ostringstream size;
+                size << (file->getSize());
+                headers.push_back( new HTTPHeader("Content-length", size.str()) );
+                
+                /* file size */
                 headers.push_back( new HTTPHeader("Content-type",
-                                                  getContentType(fileMeta)) );
-                //Last-modified
-                string dateStr = getHTTPDate(getLastMod(fileMeta));
+                                                  file->getType()) );
+                /* Last-modified */
                 headers.push_back( new HTTPHeader("Last-modified",
-                                                  getHTTPDate(getLastMod(fileMeta))) );
+                                                  getHTTPDate(file->getLastMod())) );
                 break;
             }
             default:
@@ -116,7 +119,7 @@ void HTTPResponse::buildHTTPResponse(HTTPRequest *req)
     }
     printf("Fill header...\n");
     fillHeader();
-    printResponse();
+    //print();
 }
 
 
@@ -133,21 +136,18 @@ void HTTPResponse::fillHeader()
         "Content-type",
         "Last-modified",
     };
-    size_t bufSize = 0;
-    size_t lineSize;
-    unsigned int i;
 
     string headerContent = statusLine;
 
-    for(i = 0; i < sizeof(responseOrder) / sizeof(char *); i++) 
+    for(unsigned i = 0; i < sizeof(responseOrder) / sizeof(char *); i++) 
     {
         string key = responseOrder[i];
-        string value = headers.getValueByKey(key);
+        string value = getHeaderValueByKey(key);
         if(value != "") {
             headerContent += (key + ": " + value + "\r\n");
         }
     }
-    headerContent + = "\r\n";
+    headerContent += "\r\n";
     maxHeaderPtr = headerContent.length();
 
     headerBuffer = new char[headerContent.length() + 1];
@@ -155,7 +155,7 @@ void HTTPResponse::fillHeader()
 }
 
 
-// char **fillENVP(HTTPRequest *req)
+// char** HTTPResponse::fillENVP(HTTPRequest *req)
 // {
 //     DLL *envpList = req->envp;
 //     int size = envpList->size;
@@ -175,7 +175,7 @@ void HTTPResponse::fillHeader()
 //     return ret;
 // }
 
-// int buildCGIResponseObj(responseObj *res, HTTPRequest *req)
+// int HTTPResponse::buildCGIResponseObj(responseObj *res, HTTPRequest *req)
 // {
 //     pid_t pid;
 //     int stdin_pipe[2];
@@ -235,7 +235,7 @@ void HTTPResponse::fillHeader()
 // }
 
 
-void printResponse()
+void HTTPResponse::print()
 {
     printf("----Begin New Response----\n");
     printf("%s\n", headerBuffer);
@@ -244,7 +244,7 @@ void printResponse()
 
 
 /** @brief write response to write buffer */
-int writeResponse(char *buf, ssize_t maxSize, ssize_t *retSize)
+int HTTPResponse::writeResponse(char *buf, ssize_t maxSize, ssize_t *retSize)
 {
     size_t hdPart_size = 0;
     size_t fdPart_size = 0;
@@ -254,7 +254,7 @@ int writeResponse(char *buf, ssize_t maxSize, ssize_t *retSize)
         return 0;
     }
     
-    printf("Remain header =%d, file=%d\n", maxHeaderPtr - headerPtr, maxFilePtr - filePtr);
+    printf("Remain header = %d, file = %d\n", maxHeaderPtr - headerPtr, maxFilePtr - filePtr);
     if(headerPtr + maxSize <= maxHeaderPtr) {
         hdPart_size = maxSize;
     }
@@ -277,7 +277,7 @@ int writeResponse(char *buf, ssize_t maxSize, ssize_t *retSize)
 
 
 /** @brief create response building time */
-string getHTTPDate(time_t tmraw)
+string HTTPResponse::getHTTPDate(time_t tmraw)
 {
     char dateStr[64];
     struct tm ctm = *gmtime(&tmraw);
@@ -287,36 +287,35 @@ string getHTTPDate(time_t tmraw)
 
 
 /** @brief add Status Line */
-int addStatusLine(HTTPRequest *req)
+int HTTPResponse::addStatusLine(HTTPRequest *req)
 {
     int errorFlag = 0;
-    fileMetadata *fm;
     
     statusLine = "HTTP/1.1 200 OK\r\n";
-    if(rep->getState() == HTTPRequest::requestError) 
+    if(req->getState() == HTTPRequest::ParsedError) 
     {
         errorFlag = 1;
         switch((enum HTTPRequest::StatusCode)req->getStatusCode()) 
         {
-            case BAD_REQUEST:
+            case HTTPRequest::BAD_REQUEST:
                 statusLine = "HTTP/1.1 400 BAD REQUEST\r\n";
                 break;
-            case NOT_FOUND:
+            case HTTPRequest::NOT_FOUND:
                 statusLine = "HTTP/1.1 404 NOT FOUND\r\n";
                 break;
-            case LENGTH_REQUIRED:
+            case HTTPRequest::LENGTH_REQUIRED:
                 statusLine = "HTTP/1.1 411 LENGTH REQUIRED\r\n";
                 break;
-            case INTERNAL_SERVER_ERROR:
+            case HTTPRequest::INTERNAL_SERVER_ERROR:
                 statusLine = "HTTP/1.1 500 INTERNAL SERVER ERROR\r\n";
                 break;
-            case NOT_IMPLEMENTED:
+            case HTTPRequest::NOT_IMPLEMENTED:
                 statusLine = "HTTP/1.1 501 NOT IMPLEMENTED\r\n";
                 break;
-            case SERVICE_UNAVAILABLE:
+            case HTTPRequest::SERVICE_UNAVAILABLE:
                 statusLine = "HTTP/1.1 503 SERVICE UNAVAILABLE\r\n";
                 break;
-            case HTTP_VERSION_NOT_SUPPORTED:
+            case HTTPRequest::HTTP_VERSION_NOT_SUPPORTED:
                 statusLine = "HTTP/1.1 505 HTTP VERSION NOT SUPPORTED\r\n";
                 break;
             default:
@@ -326,16 +325,15 @@ int addStatusLine(HTTPRequest *req)
     }
     else 
     {
-        fm = prepareFile(req->getURI(), "r");
-        if(fm == NULL)
+        file = new FileIO(req->getURI());
+        if(file == NULL)
         {
             printf("Failed parpared file\n");
             errorFlag = 1;
             statusLine = "HTTP/1.1 404 FILE NOT FOUND\r\n";
         }
         else {
-            printf("Success parpared file\n");
-            fileMeta = fm;
+            printf("Success init file\n");
         }
     }
     return errorFlag;
@@ -343,7 +341,7 @@ int addStatusLine(HTTPRequest *req)
 
 
 /** if it is a CGI response */
-int isCGIResponse()
+int HTTPResponse::isCGIResponse()
 {
     return isCGI == 1;
 }

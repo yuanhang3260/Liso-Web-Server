@@ -40,7 +40,7 @@ public:
     /** pipe Handler */
     void pipeHandler(ClientConnection *client);
     /** process Handler */
-    void processHandler(ClientConnection *client);
+    int processHandler(ClientConnection *client);
     /** write Handler */
     void writeHandler(ClientConnection *client);
     /** close Handler */
@@ -57,7 +57,7 @@ private:
     /** set of all active descriptors */      
     fd_set read_set;
     /** subset of descriptors ready for reading */
-    fd_set ready_set;
+    fd_set write_set;
     /** number of ready descriptors from select */
     int nready;
     /** Client Connections */
