@@ -25,7 +25,7 @@ for i in xrange(numConnections):
 	s.connect((serverHost, serverPort))
 	socketList.append(s)
 
-RESPONSE = 'GET /images/liso_header.png HTTP/1.1\r\n\
+RESPONSE = 'GET /index.html HTTP/1.1\r\n\
 Host: localhost\r\n\
 Connection: keep-alive\r\n\
 Cache-Control: no-cache\r\n\

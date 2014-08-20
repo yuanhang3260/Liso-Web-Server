@@ -88,6 +88,10 @@ void HTTPResponse::buildHTTPResponse(HTTPRequest *req)
             case HTTPRequest::GET :
                 printf("Load file for GET\n");
                 fileBuffer = file->loadFile();
+                if (fileBuffer == NULL) {
+                    fprintf(stderr, "Load File %s failed\n", (file->getPath()).c_str());
+                    statusLine = "HTTP/1.1 404 NOT FOUND\r\n";
+                }
                 maxFilePtr = file->getSize();
 
             case HTTPRequest::HEAD : {

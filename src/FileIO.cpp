@@ -67,6 +67,8 @@ char* FileIO::loadFile()
     void* mem_addr = mmap(0, length, PROT_READ, MAP_PRIVATE, fd, 0);
     if (mem_addr == (void*)-1) {
         close(fd);
+        lastMod = (time_t)0;
+        length = -1;
         return NULL;
     }
     close(fd);

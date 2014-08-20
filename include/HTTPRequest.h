@@ -13,6 +13,7 @@
 
 using namespace std;
 
+class ClientConnection;
 
 class HTTPRequest
 {
@@ -57,11 +58,11 @@ public:
 
 
     /* Constructor and Destructor */
-    HTTPRequest(int, const char *, int);
+    HTTPRequest(ClientConnection*, int, const char *, int);
     ~HTTPRequest();
 
     /** parse http request */
-    void httpParse(char *bufPtr, ssize_t *size, int full );
+    void httpParse(char *bufPtr, ssize_t *size);
     /** is a CGI request */
     //int isCGIRequest();
     /** is a new request */
@@ -79,6 +80,7 @@ public:
     string getHeaderValueByKey(string key);
 
     void setParseStatus(enum ParseState _parseStatus) { parseStatus = _parseStatus; }
+    enum ParseState getParseStatus() { return parseStatus; }
     
 /*----------------------------------------------------------------------------*/
 private:
@@ -96,12 +98,13 @@ private:
     
     int isNew;
     int isCGI;
+
+    ClientConnection *client;
     
     // char *exePath;
     // DLL *envp;
 
     /* Private methods */
-    char* nextToken(char *, char *);
     void httpParseLine(char *, ssize_t , ssize_t *);
     void setRequestError(enum StatusCode );
 

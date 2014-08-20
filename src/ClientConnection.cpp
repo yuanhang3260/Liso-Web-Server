@@ -43,8 +43,7 @@ ClientConnection::ClientConnection( int connFd,
 
     isOpen = 1;
     
-    req = new HTTPRequest(serverPort, clientAddr.c_str(), 
-                          (connType == T_HTTPS) ? 1 : 0 );
+    req = NULL;
     res = NULL;
     
     CGIout = -1;

@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 
         printf("\n***\n");
     }
-
+    
     /** terminate logging */
     logger.endLog();
 }

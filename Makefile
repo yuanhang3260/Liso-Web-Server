@@ -26,7 +26,8 @@ S_OBJ = $(OBJ_DIR)/sample_server.o \
         $(OBJ_DIR)/HTTPRequest.o \
         $(OBJ_DIR)/HTTPHeader.o \
         $(OBJ_DIR)/HTTPResponse.o \
-        $(OBJ_DIR)/FileIO.o
+        $(OBJ_DIR)/FileIO.o \
+        $(OBJ_DIR)/MyString.o \
 
 
 LFLAGS=-lssl -lcrypto

@@ -207,16 +207,20 @@ void SelPool::readHandler(ClientConnection *client)
         printf("Successfully Read %d Bytes from client %d\n", retSize, client->getFd());
         client->addReadSize(retSize);
         
-        /* parse request */
+        /* get read buffer */
         ssize_t size;
         char* parse_buf = client->getReadBuffer_ForRead(&size);
-        int full = client->isFull();
+        
+        /* try to parse the request from buffer */
         HTTPRequest *req = client->getRequest();
-
-        req->httpParse(parse_buf, &size, full);
+        req->httpParse(parse_buf, &size);
         client->removeReadSize(size);
+
         // TODO: to add a status "Request_Parsing"
-        client->setState(ClientConnection::Request_Parsed);
+        if (client->getRequest()->getState() == HTTPRequest::ParsedCorrect
+         || client->getRequest()->getState() == HTTPRequest::ParsedError) {
+            client->setState(ClientConnection::Request_Parsed);
+        }
     }
     /** EOF incurred, connection closed by client */
     else if(retSize == 0)
@@ -459,6 +463,10 @@ void SelPool::add_client(int connfd, string addr)
                                           port,
                                           addr,
                                           ClientConnection::T_HTTP);
+    
+    /* add request for this ClientConnection */
+    newClient->setRequest(new HTTPRequest(newClient, port, addr.c_str(), 0));
+
     printf("BUF_SIZE = %d\n", BUF_SIZE);
     clients.push_back(newClient);
     //cout << "added\n";

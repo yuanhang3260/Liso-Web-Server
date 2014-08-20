@@ -41,6 +41,7 @@ public:
     /* Getters and Setters */
     int getFd() { return fd; }
     string getAddr() { return clientAddr; }
+    void setRequest(HTTPRequest* _request) { req = _request; }
     HTTPRequest* getRequest() { return req; }
     HTTPResponse* getResponse() { return res; }
     void deleteResponse() { delete res; res = NULL; }

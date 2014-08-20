@@ -5,10 +5,12 @@
  */
 
 #include "HTTPRequest.h"
+#include "ClientConnection.h"
+#include "MyString.h"
 
 
 /** @brief Class HTTPRequest constructor */
-HTTPRequest::HTTPRequest(int port, const char *addr, int https)
+HTTPRequest::HTTPRequest(ClientConnection *_client, int port, const char *addr, int https)
 {
     //char buf[16];
     method = UNIMPLEMENTED;
@@ -26,6 +28,8 @@ HTTPRequest::HTTPRequest(int port, const char *addr, int https)
     isCGI = -1;
 
     (void)addr;
+
+    client = _client;
 
     // envp = malloc(sizeof(DLL));
     // initList(envp, compareHeaderEntry, freeHeaderEntry, NULL);
@@ -56,125 +60,88 @@ HTTPRequest::~HTTPRequest()
 }
 
 
-/** get the next line */
-char* HTTPRequest::nextToken(char *buf, char *bufEnd)
-{
-    char *next = NULL;
-    for(; buf < bufEnd; buf++) 
-    {
-        //printf("%c", *buf);
-        if(buf[0] == '\r' && buf[1] == '\n') 
-        {
-            next = buf;
-            break;
-        }
-    }
-
-    if(next == NULL) {
-        return NULL;
-    } 
-    else {
-        return next + 2;
-    }
-}
-
-
 /** @brief parse request */
-void HTTPRequest::httpParse(char *bufPtr, ssize_t *size, int full)
+void HTTPRequest::httpParse(char *bufPtr, ssize_t *size)
 {
-    // if(state == ParsedCorrect) 
-    // {
-    //     *size = 0;
-    //     printf("Existing Passed Request. No Parsing Needed\n");
-    // }
-    // if(state == ParsedError)
-    // {
-    //     *size = 0;
-    //     printf("Existing Parsed Error. No Parsing Needed\n");
-    // }
-    /* reset parse status */
-    parseStatus = requestLine;
-
     ssize_t curSize = *size;
-    char *bufEnd = bufPtr + curSize;
-    char *thisPtr = bufPtr;
-    char *nextPtr;
-    ssize_t parsedSize;
+    char *thisLine, *nextLine;
     
-    /* Begin Parsing in a state machine */
-    printf("Parsing %d bytes: Start ...\n", *size);
-    //printf("%s\n", bufPtr);
-    while(1)
+    /* find the first \r\n\r\n marking the end of one request */
+    char* request_end = MyString::strnstr(bufPtr, "\r\n\r\n", curSize);
+    if (request_end == NULL)
     {
-        if(parseStatus == contentLine) {
-            nextPtr = bufEnd;
-        }
-        else 
-        {
-            /* get next line in the read buffer */
-            nextPtr = nextToken(thisPtr, bufEnd);
-            if(nextPtr == NULL && full)
-            {
-                // Reject header longer than buffer size */
-                setRequestError(BAD_REQUEST);
-                break;
-            } 
-            else {
-                full = 0;
-            }
-        }
-        if(nextPtr != NULL) 
-        {
-            parsedSize = (ssize_t)(nextPtr - thisPtr);
-            
-            /* httpParseLine is a state machine switching in states: 
-             * [requestLine], [headerLine], [content], [requestDone], [requestError]
-             */
-            httpParseLine(thisPtr, parsedSize, &parsedSize);
+        /* no complete request in the read buffer. */
+        if (client->isFull())
+        {   
+            // TODO: really should do that?
+            printf("Parsing result: Error - Abort request longer than buffer size\n");
+            state = ParsedError;
+            /* reset parse status */
+            parseStatus = requestLine;
         }
         else {
-            break;
-        }
-        if(parseStatus == requestError ) {
-            break;
-        }
-        /* Prepare for next line */
-        thisPtr = thisPtr + parsedSize;
-        if(thisPtr >= bufEnd) {
-            break;
-        }
-        if(parseStatus == requestDone) {
-            break;
+            /* Do nothing. Wait for more reqeust reading. */
+            *size = 0;
         }
     }
+    else
+    {
+        int req_len = request_end - bufPtr + strlen("\r\n\r\n");
+        char* request = new char[req_len + 1];
+        
+        /* copy the request */
+        memcpy(request, bufPtr, req_len);
+        request[req_len] = '\0';
 
-    /* refresh parsed buffer */
-    if(thisPtr < bufEnd) {
-        *size = thisPtr - (bufEnd - curSize);
-    }
-    if(isNew && *size > 0) {
-        isNew = 0;
+        /* Begin Parsing one request */
+        printf("Begin Parsing %d bytes reqeust: Start ...\n", curSize);
+        printf("%s", request);
+
+        thisLine = request;
+        nextLine = NULL;
+        while (req_len > 0)
+        {
+            /* get next line in the read buffer */
+            nextLine = MyString::strnstr(thisLine, "\r\n", req_len) + strlen("\r\n");
+            int line_length = nextLine - thisLine;
+
+            /* parse one line in a state machine */
+            httpParseLine(thisLine, line_length, &line_length);
+            if (parseStatus == requestDone || parseStatus == requestError) {
+                break;
+            }
+
+            /* go to next Line */
+            thisLine = nextLine;
+            /* decrease request size */
+            req_len -= line_length;
+        }
+
+        /* return parsed request length. It will be removed from read buffer */
+        *size = strlen(request);
     }
     
-    /* Set return status */
+    /* Set request state */
     if(parseStatus == requestError)
     {
         printf("Parsing result: Error\n");
         state = ParsedError;
-    } 
-    else if(parseStatus == requestDone) 
+        /* reset parse status */
+        parseStatus = requestLine;
+    }
+    else if(parseStatus == requestDone)
     {
         printf("Parsing result: Done\n");
         /* print parsed result */
-        //print();
         state = ParsedCorrect;
+        /* reset parse status */
+        parseStatus = requestLine;
     }
     else
     {
         printf("Parsing result: Parsing .. \n");
         state = Parsing;
     }
-
 }
 
 
@@ -195,7 +162,7 @@ void HTTPRequest::httpParseLine( char *_line,
     printf("[Parse line]: %s", line);
 
     switch (parseStatus) {
-    case requestLine: 
+    case requestLine:
     {
         //printf("[requst Line] - ");
         char* _method = new char[lineSize + 1];
@@ -245,7 +212,7 @@ void HTTPRequest::httpParseLine( char *_line,
     case headerLine:
     {
         //printf("[header Line] - ");
-        if(lineSize == 2 && line[0] == '\r' && line[1] == '\n') 
+        if(lineSize == 2 && line[0] == '\r' && line[1] == '\n')
         {
             printf("Header Close line\n");
             if(isValidRequest()) 
@@ -263,7 +230,7 @@ void HTTPRequest::httpParseLine( char *_line,
             else {
                 setRequestError(LENGTH_REQUIRED);
             }
-        } 
+        }
         else 
         {
             char *key = new char[lineSize];
