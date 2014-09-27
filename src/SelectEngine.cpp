@@ -63,7 +63,7 @@ void SelPool::Select()
             printf("put %d to read_set\n", connFd);
             FD_SET(connFd, &read_set);
         }
-        if( client->isWritable() )
+        if( client->isWritable() ) /* state == Writing_Response */
         {
             printf("put %d to write_set\n", connFd);
             FD_SET(connFd, &write_set);
@@ -288,7 +288,7 @@ int SelPool::processHandler(ClientConnection *client)
                 res->buildResponse(client->getRequest());
             }
             
-            /* Dump HTTP response to buffer */
+            /* Dump HTTP response to send buffer */
             ssize_t size, retSize;
             char *write_buf = client->getWriteBuffer_ForWrite(&size);
             printf( "Write buffer has %d bytes free\n", size);
