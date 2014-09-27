@@ -36,6 +36,8 @@ FileIO::FileIO(string uri)
     }
     
     cout << "[File Path]: " << path << endl;
+    fd = -1;
+    length = 0;
 }
 
 

@@ -174,12 +174,6 @@ void SelPool::check_clients()
  */
 void SelPool::readHandler(ClientConnection *client)
 {
-    // if(isHTTPS(connPtr) && !hasAcceptedSSL(connPtr)) 
-    // {
-    //     SSL_accept(connPtr->connSSL);
-    //     setAcceptedSSL(connPtr);
-    //     return;
-    // }
     if (client->isFull()) {
         return;
     }
@@ -284,15 +278,15 @@ int SelPool::processHandler(ClientConnection *client)
             
             /* build response for this client */
             HTTPResponse *res = NULL;
-            if((res = client->getResponse()) == NULL)
+            if ((res = client->getResponse()) == NULL)
             {
                 printf( "Create new response\n");
                 res = client->createResponse();
                 // if(isCGIResponse(connPtr->res)) {
                 //     connPtr->CGIout = connPtr->res->CGIout;
                 // }
+                res->buildResponse(client->getRequest());
             }
-            res->buildResponse(client->getRequest());
             
             /* Dump HTTP response to buffer */
             ssize_t size, retSize;
@@ -301,9 +295,10 @@ int SelPool::processHandler(ClientConnection *client)
             
             int re = res->writeResponse(write_buf, size, &retSize);
             client->addWriteSize(retSize);
-            if(re) {
-                printf( "All dumped\n");
+            if (re) {
+                printf("All dumped\n");
                 client->setState(ClientConnection::Done_Response);
+                //delete client->getResponse();
             }
             else {
                 printf("Not all dumped\n");
@@ -333,7 +328,7 @@ void SelPool::writeHandler(ClientConnection *client)
     }
     // else if(isHTTPS(connPtr)) {
     //     retSize = SSL_write(connPtr->connSSL, buf, size);
-    // } 
+    // }
     else {
         retSize = -1;
     }
@@ -395,26 +390,6 @@ void SelPool::writeHandler(ClientConnection *client)
 //                 cleanConnObjCGI(connPtr);
 //                 setConnObjClose(connPtr);
 //             }
-//         }
-//     }
-// }
-
-// void SelPool::prepareNewConn(connObj *connPtr)
-// {
-//     if(connPtr->wbStatus == lastRes) {
-//         connPtr->wbStatus = doneRes;
-//         if(1 == toClose(connPtr->res)) {
-//             printf( "[%d] set to close.\n", connPtr->connFd);
-//             setConnObjClose(connPtr);
-//         } else {
-//             /* Prepare for next request */
-//             freeResponseObj(connPtr->res);
-//             connPtr->res = NULL;
-//             freeRequestObj(connPtr->req);
-//             connPtr->req = createRequestObj(
-//                                connPtr->serverPort,
-//                                connPtr->clientAddr,
-//                                (connPtr->connType == T_HTTPS) ? 1 : 0);
 //         }
 //     }
 // }

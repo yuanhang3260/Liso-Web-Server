@@ -1,0 +1,288 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BAD_REQUEST	include/HTTPRequest.h	/^        BAD_REQUEST = 400,$/;"	e	enum:HTTPRequest::StatusCode
+BUF_SIZE	include/ClientConnection.h	15;"	d
+BUF_SIZE	src/client.c	24;"	d	file:
+CC	Makefile	/^CC=g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-Wall -Werror -O2$/;"	m
+CGIFolder	include/FileIO.h	/^    static string CGIFolder;$/;"	m	class:FileIO
+CGIFolder	src/FileIO.cpp	/^string FileIO::CGIFolder;$/;"	m	class:FileIO	file:
+CGIout	include/ClientConnection.h	/^    int CGIout;$/;"	m	class:ClientConnection
+CGIout	include/HTTPResponse.h	/^    int CGIout;$/;"	m	class:HTTPResponse
+CLIENT_CLOSED	src/SelectEngine.cpp	21;"	d	file:
+CSS	include/FileIO.h	/^        CSS,$/;"	e	enum:FileIO::MIMEType
+ClientConnection	include/ClientConnection.h	/^class ClientConnection$/;"	c
+ClientConnection	src/ClientConnection.cpp	/^ClientConnection::ClientConnection( int connFd,$/;"	f	class:ClientConnection
+Close_Socket	src/Socket.cpp	/^int Socket::Close_Socket(int sock)$/;"	f	class:Socket
+DFT_PORT	src/SelectEngine.cpp	20;"	d	file:
+DFT_PORT	src/sample_server.cpp	23;"	d	file:
+Done_Response	include/ClientConnection.h	/^        Done_Response,$/;"	e	enum:ClientConnection::State
+ECHO_PORT	src/client.c	23;"	d	file:
+ERROR	include/Utility.h	8;"	d
+FileIO	include/FileIO.h	/^class FileIO $/;"	c
+FileIO	src/FileIO.cpp	/^FileIO::FileIO(string uri)$/;"	f	class:FileIO
+GET	include/HTTPRequest.h	/^        GET,$/;"	e	enum:HTTPRequest::Method
+GIF	include/FileIO.h	/^        GIF,$/;"	e	enum:FileIO::MIMEType
+HEAD	include/HTTPRequest.h	/^        HEAD,$/;"	e	enum:HTTPRequest::Method
+HTML	include/FileIO.h	/^        HTML,$/;"	e	enum:FileIO::MIMEType
+HTTPHeader	include/HTTPHeader.h	/^	HTTPHeader(string _key, string _value): key(_key), value(_value) {}$/;"	f	class:HTTPHeader
+HTTPHeader	include/HTTPHeader.h	/^class HTTPHeader$/;"	c
+HTTPRequest	include/HTTPRequest.h	/^class HTTPRequest$/;"	c
+HTTPRequest	src/HTTPRequest.cpp	/^HTTPRequest::HTTPRequest(ClientConnection *_client, int port, const char *addr, int https)$/;"	f	class:HTTPRequest
+HTTPResponse	include/HTTPResponse.h	/^class HTTPResponse $/;"	c
+HTTPResponse	src/HTTPResponse.cpp	/^HTTPResponse::HTTPResponse()$/;"	f	class:HTTPResponse
+HTTPType	include/ClientConnection.h	/^    enum HTTPType {$/;"	g	class:ClientConnection
+HTTP_VERSION_NOT_SUPPORTED	include/HTTPRequest.h	/^        HTTP_VERSION_NOT_SUPPORTED = 505,$/;"	e	enum:HTTPRequest::StatusCode
+INC_DIR	Makefile	/^INC_DIR=include$/;"	m
+INTERNAL_SERVER_ERROR	include/HTTPRequest.h	/^        INTERNAL_SERVER_ERROR = 500,$/;"	e	enum:HTTPRequest::StatusCode
+Init	include/HTTPRequest.h	/^        Init,$/;"	e	enum:HTTPRequest::State
+JPEG	include/FileIO.h	/^        JPEG,$/;"	e	enum:FileIO::MIMEType
+LENGTH_REQUIRED	include/HTTPRequest.h	/^        LENGTH_REQUIRED = 411,$/;"	e	enum:HTTPRequest::StatusCode
+LFLAGS	Makefile	/^LFLAGS=-lssl -lcrypto$/;"	m
+LISTENQ	include/SelectEngine.h	13;"	d
+LISTENQ	include/Socket.h	14;"	d
+LOG_DEBUG	include/Logger.h	/^	    LOG_DEBUG = 1,$/;"	e	enum:Logger::LogLevel
+LOG_PROD	include/Logger.h	/^	    LOG_PROD = 2,$/;"	e	enum:Logger::LogLevel
+Liso_error	src/Utility.cpp	/^void Liso_error(string errmsg)$/;"	f
+LogLevel	include/Logger.h	/^	enum LogLevel {$/;"	g	class:Logger
+Logger	include/Logger.h	/^	Logger(string _logFileName): logFileName(_logFileName)$/;"	f	class:Logger
+Logger	include/Logger.h	/^class Logger$/;"	c
+MIMEType	include/FileIO.h	/^    enum MIMEType {$/;"	g	class:FileIO
+Method	include/HTTPRequest.h	/^    enum Method {$/;"	g	class:HTTPRequest
+MyString	include/MyString.h	/^class MyString$/;"	c
+NOT_FOUND	include/HTTPRequest.h	/^        NOT_FOUND = 404,$/;"	e	enum:HTTPRequest::StatusCode
+NOT_IMPLEMENTED	include/HTTPRequest.h	/^        NOT_IMPLEMENTED = 501,$/;"	e	enum:HTTPRequest::StatusCode
+OBJECTS	Makefile	/^OBJECTS = $(OBJ_DIR)\/liso.o \\$/;"	m
+OBJ_DIR	Makefile	/^OBJ_DIR=lib$/;"	m
+OK	include/HTTPRequest.h	/^        OK = 200,$/;"	e	enum:HTTPRequest::StatusCode
+OTHER	include/FileIO.h	/^        OTHER,$/;"	e	enum:FileIO::MIMEType
+Open_ListenSocket	src/Socket.cpp	/^int Socket::Open_ListenSocket(int port) $/;"	f	class:Socket
+PNG	include/FileIO.h	/^        PNG,$/;"	e	enum:FileIO::MIMEType
+POST	include/HTTPRequest.h	/^        POST,$/;"	e	enum:HTTPRequest::Method
+ParseState	include/HTTPRequest.h	/^    enum ParseState {$/;"	g	class:HTTPRequest
+ParsedCorrect	include/HTTPRequest.h	/^        ParsedCorrect,$/;"	e	enum:HTTPRequest::State
+ParsedError	include/HTTPRequest.h	/^        ParsedError,$/;"	e	enum:HTTPRequest::State
+Parsing	include/HTTPRequest.h	/^        Parsing,$/;"	e	enum:HTTPRequest::State
+RESPONSE	client.py	/^\\r\\n'$/;"	v
+Ready_ForRead	include/ClientConnection.h	/^        Ready_ForRead,$/;"	e	enum:ClientConnection::State
+Request_Parsed	include/ClientConnection.h	/^        Request_Parsed,$/;"	e	enum:ClientConnection::State
+SA	include/SelectEngine.h	/^typedef struct sockaddr SA;$/;"	t	typeref:struct:sockaddr
+SA	include/Socket.h	/^typedef struct sockaddr SA;$/;"	t	typeref:struct:sockaddr
+SERVICE_UNAVAILABLE	include/HTTPRequest.h	/^        SERVICE_UNAVAILABLE = 503,$/;"	e	enum:HTTPRequest::StatusCode
+SOURCE_DIR	Makefile	/^SOURCE_DIR=src$/;"	m
+SUCCESS	include/Utility.h	9;"	d
+S_OBJ	Makefile	/^S_OBJ = $(OBJ_DIR)\/sample_server.o \\$/;"	m
+SelPool	include/SelectEngine.h	/^class SelPool$/;"	c
+SelPool	src/SelectEngine.cpp	/^SelPool::SelPool(int server_port) $/;"	f	class:SelPool
+Select	src/SelectEngine.cpp	/^void SelPool::Select()$/;"	f	class:SelPool
+Socket	include/Socket.h	/^class Socket$/;"	c
+State	include/ClientConnection.h	/^    enum State {$/;"	g	class:ClientConnection
+State	include/HTTPRequest.h	/^    enum State {$/;"	g	class:HTTPRequest
+StatusCode	include/HTTPRequest.h	/^    enum StatusCode {$/;"	g	class:HTTPRequest
+T_HTTP	include/ClientConnection.h	/^        T_HTTP,$/;"	e	enum:ClientConnection::HTTPType
+T_HTTPS	include/ClientConnection.h	/^        T_HTTPS,$/;"	e	enum:ClientConnection::HTTPType
+UNIMPLEMENTED	include/HTTPRequest.h	/^        UNIMPLEMENTED,$/;"	e	enum:HTTPRequest::Method
+VPATH	Makefile	/^VPATH=$(SOURCE)$/;"	m
+Writing_Response	include/ClientConnection.h	/^        Writing_Response,$/;"	e	enum:ClientConnection::State
+__CLIENTCONNECTION_H__	include/ClientConnection.h	2;"	d
+__FILEIO_H_	include/FileIO.h	2;"	d
+__HTTPHEADER_H_	include/HTTPHeader.h	2;"	d
+__HTTPREQUEST_H__	include/HTTPRequest.h	2;"	d
+__HTTPRESPONSE_H__	include/HTTPResponse.h	2;"	d
+__LOGGER_H_	include/Logger.h	2;"	d
+__MYSTRING_H__	include/MyString.h	2;"	d
+__SAMPLE_SERVER_H_	include/sample_server.h	2;"	d
+__SELECTENGINE_H_	include/SelectEngine.h	2;"	d
+__SOCKET_H_	include/Socket.h	2;"	d
+__UTILITY_H_	include/Utility.h	2;"	d
+addReadSize	include/ClientConnection.h	/^    void addReadSize(ssize_t readSize) { curReadSize += readSize; }$/;"	f	class:ClientConnection
+addStatusLine	src/HTTPResponse.cpp	/^int HTTPResponse::addStatusLine(HTTPRequest *req)$/;"	f	class:HTTPResponse
+addWriteSize	include/ClientConnection.h	/^    void addWriteSize(ssize_t writeSize) { curWriteSize += writeSize; }$/;"	f	class:ClientConnection
+add_client	src/SelectEngine.cpp	/^void SelPool::add_client(int connfd, string addr)$/;"	f	class:SelPool
+buildHTTPResponse	src/HTTPResponse.cpp	/^void HTTPResponse::buildHTTPResponse(HTTPRequest *req)$/;"	f	class:HTTPResponse
+buildResponse	src/HTTPResponse.cpp	/^void HTTPResponse::buildResponse(HTTPRequest *req)$/;"	f	class:HTTPResponse
+byte_cnt	include/SelectEngine.h	/^    int byte_cnt;$/;"	m	class:SelPool
+check_clients	src/SelectEngine.cpp	/^void SelPool::check_clients() $/;"	f	class:SelPool
+check_server	src/SelectEngine.cpp	/^void SelPool::check_server()$/;"	f	class:SelPool
+cleanCGI	src/ClientConnection.cpp	/^void ClientConnection::cleanCGI()$/;"	f	class:ClientConnection
+client	include/HTTPRequest.h	/^    ClientConnection *client;$/;"	m	class:HTTPRequest
+clientAddr	include/ClientConnection.h	/^    string clientAddr;$/;"	m	class:ClientConnection
+clients	include/SelectEngine.h	/^    vector<ClientConnection*> clients;$/;"	m	class:SelPool
+close	include/HTTPResponse.h	/^    int close;$/;"	m	class:HTTPResponse
+compare	include/ClientConnection.h	/^    int compare(ClientConnection *clientCon2) { return (fd - clientCon2->fd); }$/;"	f	class:ClientConnection
+compare	include/HTTPHeader.h	/^	int compare(HTTPHeader *h2) { return key.compare(h2->key); }$/;"	f	class:HTTPHeader
+connType	include/ClientConnection.h	/^    enum HTTPType connType;$/;"	m	class:ClientConnection	typeref:enum:ClientConnection::HTTPType
+content	include/HTTPRequest.h	/^    char *content;$/;"	m	class:HTTPRequest
+contentLength	include/HTTPRequest.h	/^    int contentLength;$/;"	m	class:HTTPRequest
+contentLine	include/HTTPRequest.h	/^        contentLine,$/;"	e	enum:HTTPRequest::ParseState
+createPath	src/FileIO.cpp	/^string FileIO::createPath(string dir, string path, string fileName)$/;"	f	class:FileIO
+createResponse	include/ClientConnection.h	/^    HTTPResponse* createResponse() { return (res = new HTTPResponse()); }$/;"	f	class:ClientConnection
+curReadSize	include/ClientConnection.h	/^    ssize_t curReadSize;$/;"	m	class:ClientConnection
+curWriteSize	include/ClientConnection.h	/^    ssize_t curWriteSize;$/;"	m	class:ClientConnection
+data	client.py	/^			data = socketSubset[j].recv(4096*8)$/;"	v
+data	cp1_checker.py	/^			data = socketSubset[j].recv(randomLen[j])$/;"	v
+debug	src/Utility.cpp	/^void debug(int n)$/;"	f
+deleteResponse	include/ClientConnection.h	/^    void deleteResponse() { delete res; res = NULL; }$/;"	f	class:ClientConnection
+endLog	src/Logger.cpp	/^void Logger::endLog() $/;"	f	class:Logger
+fd	include/ClientConnection.h	/^    int fd;$/;"	m	class:ClientConnection
+fd	include/FileIO.h	/^    int fd;$/;"	m	class:FileIO
+file	include/HTTPResponse.h	/^    FileIO *file;$/;"	m	class:HTTPResponse
+fileBuffer	include/HTTPResponse.h	/^    char *fileBuffer;$/;"	m	class:HTTPResponse
+filePtr	include/HTTPResponse.h	/^    size_t filePtr;$/;"	m	class:HTTPResponse
+fillHeader	src/HTTPResponse.cpp	/^void HTTPResponse::fillHeader()$/;"	f	class:HTTPResponse
+getAddr	include/ClientConnection.h	/^    string getAddr() { return clientAddr; }$/;"	f	class:ClientConnection
+getCGIPath	include/FileIO.h	/^    string getCGIPath() { return CGIFolder; }$/;"	f	class:FileIO
+getFd	include/ClientConnection.h	/^    int getFd() { return fd; }$/;"	f	class:ClientConnection
+getFile	include/FileIO.h	/^    int getFile() { return fd; }$/;"	f	class:FileIO
+getFileTypeFromName	src/FileIO.cpp	/^enum FileIO::MIMEType FileIO::getFileTypeFromName()$/;"	f	class:FileIO
+getHTTPDate	src/HTTPResponse.cpp	/^string HTTPResponse::getHTTPDate(time_t tmraw)$/;"	f	class:HTTPResponse
+getHeaderValueByKey	src/HTTPRequest.cpp	/^string HTTPRequest::getHeaderValueByKey(string key)$/;"	f	class:HTTPRequest
+getHeaderValueByKey	src/HTTPResponse.cpp	/^string HTTPResponse::getHeaderValueByKey(string key)$/;"	f	class:HTTPResponse
+getHeaders	include/HTTPRequest.h	/^    vector<HTTPHeader*> getHeaders() {  return headers; }$/;"	f	class:HTTPRequest
+getKey	include/HTTPHeader.h	/^	string getKey() { return key; }$/;"	f	class:HTTPHeader
+getLastMod	include/FileIO.h	/^    time_t getLastMod() { return lastMod; }$/;"	f	class:FileIO
+getLockFile	include/FileIO.h	/^    string getLockFile() { return lockFile; }$/;"	f	class:FileIO
+getMethod	include/HTTPRequest.h	/^    enum Method getMethod() { return method; }$/;"	f	class:HTTPRequest
+getMethodString	src/HTTPRequest.cpp	/^string HTTPRequest::getMethodString(HTTPRequest::Method method)$/;"	f	class:HTTPRequest
+getParseStatus	include/HTTPRequest.h	/^    enum ParseState getParseStatus() { return parseStatus; }$/;"	f	class:HTTPRequest
+getPath	include/FileIO.h	/^    string getPath() { return path; }$/;"	f	class:FileIO
+getReadBuffer_ForRead	src/ClientConnection.cpp	/^char* ClientConnection::getReadBuffer_ForRead(ssize_t *size)$/;"	f	class:ClientConnection
+getReadBuffer_ForWrite	src/ClientConnection.cpp	/^char* ClientConnection::getReadBuffer_ForWrite(ssize_t *size)$/;"	f	class:ClientConnection
+getRequest	include/ClientConnection.h	/^    HTTPRequest* getRequest() { return req; }$/;"	f	class:ClientConnection
+getResponse	include/ClientConnection.h	/^    HTTPResponse* getResponse() { return res; }$/;"	f	class:ClientConnection
+getSize	include/FileIO.h	/^    int getSize() { return length; }$/;"	f	class:FileIO
+getState	include/ClientConnection.h	/^    enum State getState() { return state; }$/;"	f	class:ClientConnection
+getState	include/HTTPRequest.h	/^    enum State getState() { return state; }$/;"	f	class:HTTPRequest
+getStatusCode	include/HTTPRequest.h	/^    int getStatusCode() { return statusCode; }$/;"	f	class:HTTPRequest
+getType	src/FileIO.cpp	/^string FileIO::getType()$/;"	f	class:FileIO
+getURI	include/HTTPRequest.h	/^    char* getURI() { return uri; }$/;"	f	class:HTTPRequest
+getValue	include/HTTPHeader.h	/^	string getValue() { return value; }$/;"	f	class:HTTPHeader
+getVersion	include/HTTPRequest.h	/^    int getVersion() { return version; }$/;"	f	class:HTTPRequest
+getWWWFolder	include/FileIO.h	/^    string getWWWFolder() { return wwwFolder; }$/;"	f	class:FileIO
+getWriteBuffer_ForRead	src/ClientConnection.cpp	/^char* ClientConnection::getWriteBuffer_ForRead(ssize_t *size)$/;"	f	class:ClientConnection
+getWriteBuffer_ForWrite	src/ClientConnection.cpp	/^char* ClientConnection::getWriteBuffer_ForWrite(ssize_t *size)$/;"	f	class:ClientConnection
+headerBuffer	include/HTTPResponse.h	/^    char *headerBuffer;$/;"	m	class:HTTPResponse
+headerLine	include/HTTPRequest.h	/^        headerLine,$/;"	e	enum:HTTPRequest::ParseState
+headerPtr	include/HTTPResponse.h	/^    size_t headerPtr;$/;"	m	class:HTTPResponse
+headers	include/HTTPRequest.h	/^    vector<HTTPHeader*> headers;$/;"	m	class:HTTPRequest
+headers	include/HTTPResponse.h	/^    vector<HTTPHeader*> headers;$/;"	m	class:HTTPResponse
+httpParse	src/HTTPRequest.cpp	/^void HTTPRequest::httpParse(char *bufPtr, ssize_t *size)$/;"	f	class:HTTPRequest
+httpParseLine	src/HTTPRequest.cpp	/^void HTTPRequest::httpParseLine( char *_line, $/;"	f	class:HTTPRequest
+initFileIO	src/FileIO.cpp	/^void FileIO::initFileIO(string _lockFile, string _wwwFolder, string _CGIFolder)$/;"	f	class:FileIO
+isCGI	include/HTTPRequest.h	/^    int isCGI;$/;"	m	class:HTTPRequest
+isCGI	include/HTTPResponse.h	/^    int isCGI;$/;"	m	class:HTTPResponse
+isCGIResponse	src/HTTPResponse.cpp	/^int HTTPResponse::isCGIResponse()$/;"	f	class:HTTPResponse
+isClosed	include/ClientConnection.h	/^    int isClosed() { return !isOpen; }$/;"	f	class:ClientConnection
+isEmpty	include/ClientConnection.h	/^    int isEmpty() { return curReadSize == 0; }$/;"	f	class:ClientConnection
+isFull	include/ClientConnection.h	/^    int isFull() { return curReadSize == maxReadSize; }$/;"	f	class:ClientConnection
+isHTTP	include/ClientConnection.h	/^    int isHTTP() { return connType == T_HTTP; }$/;"	f	class:ClientConnection
+isHTTPS	include/ClientConnection.h	/^    int isHTTPS() { return connType == T_HTTPS; }$/;"	f	class:ClientConnection
+isNew	include/ClientConnection.h	/^    int isNew() { return curReadSize > 0; }$/;"	f	class:ClientConnection
+isNew	include/HTTPRequest.h	/^    int isNew;$/;"	m	class:HTTPRequest
+isNewRequest	include/HTTPRequest.h	/^    int isNewRequest() { return isNew; }$/;"	f	class:HTTPRequest
+isOpen	include/ClientConnection.h	/^    int isOpen;$/;"	m	class:ClientConnection
+isReadable	include/ClientConnection.h	/^    int isReadable() { return state == Ready_ForRead; }$/;"	f	class:ClientConnection
+isValidRequest	src/HTTPRequest.cpp	/^int HTTPRequest::isValidRequest()$/;"	f	class:HTTPRequest
+isWritable	include/ClientConnection.h	/^    int isWritable() { return state == Writing_Response; }$/;"	f	class:ClientConnection
+key	include/HTTPHeader.h	/^    string key;$/;"	m	class:HTTPHeader
+lastMod	include/FileIO.h	/^    time_t lastMod;$/;"	m	class:FileIO
+length	include/FileIO.h	/^    int length;$/;"	m	class:FileIO
+listenfd	include/SelectEngine.h	/^    int listenfd;$/;"	m	class:SelPool
+loadFile	src/FileIO.cpp	/^char* FileIO::loadFile()$/;"	f	class:FileIO
+lockFile	include/FileIO.h	/^    static string lockFile;$/;"	m	class:FileIO
+lockFile	src/FileIO.cpp	/^string FileIO::lockFile;$/;"	m	class:FileIO	file:
+log	src/Logger.cpp	/^void Logger::log(const char* format, ...)$/;"	f	class:Logger
+logFileName	include/Logger.h	/^	string logFileName;$/;"	m	class:Logger
+logfile	include/Logger.h	/^	static FILE* logfile;$/;"	m	class:Logger
+logfile	src/Logger.cpp	/^FILE* Logger::logfile;$/;"	m	class:Logger	file:
+m	include/HTTPRequest.h	/^    HTTPRequest::Method m;$/;"	m	struct:methodEntry
+main	src/client.c	/^int main(int argc, char* argv[])$/;"	f
+main	src/sample_server.cpp	/^int main(int argc, char **argv)$/;"	f
+map	include/ClientConnection.h	/^    int map(void *data) { return isOpen; }$/;"	f	class:ClientConnection
+maxFilePtr	include/HTTPResponse.h	/^    size_t maxFilePtr;$/;"	m	class:HTTPResponse
+maxHeaderPtr	include/HTTPResponse.h	/^    size_t maxHeaderPtr;$/;"	m	class:HTTPResponse
+maxReadSize	include/ClientConnection.h	/^    ssize_t maxReadSize;$/;"	m	class:ClientConnection
+maxWriteSize	include/ClientConnection.h	/^    ssize_t maxWriteSize;$/;"	m	class:ClientConnection
+maxfd	include/SelectEngine.h	/^    int maxfd;$/;"	m	class:SelPool
+method	include/HTTPRequest.h	/^    enum Method method;$/;"	m	class:HTTPRequest	typeref:enum:HTTPRequest::Method
+methodEntry	include/HTTPRequest.h	/^struct methodEntry {$/;"	s
+nready	include/SelectEngine.h	/^    int nready;$/;"	m	class:SelPool
+numBytes	client.py	/^numBytes = int(sys.argv[5])$/;"	v
+numBytes	cp1_checker.py	/^numBytes = int(sys.argv[5])$/;"	v
+numConnections	client.py	/^numConnections = int(sys.argv[6])$/;"	v
+numConnections	cp1_checker.py	/^numConnections = int(sys.argv[6])$/;"	v
+numTrials	client.py	/^numTrials = int(sys.argv[3])$/;"	v
+numTrials	cp1_checker.py	/^numTrials = int(sys.argv[3])$/;"	v
+numWritesReads	client.py	/^numWritesReads = int(sys.argv[4])$/;"	v
+numWritesReads	cp1_checker.py	/^numWritesReads = int(sys.argv[4])$/;"	v
+open_ListenSocket	src/Socket.cpp	/^int Socket::open_ListenSocket(int port) $/;"	f	class:Socket
+parseStatus	include/HTTPRequest.h	/^    enum ParseState parseStatus;$/;"	m	class:HTTPRequest	typeref:enum:HTTPRequest::ParseState
+path	include/FileIO.h	/^    string path;$/;"	m	class:FileIO
+pid	include/HTTPResponse.h	/^    pid_t pid;$/;"	m	class:HTTPResponse
+port	include/SelectEngine.h	/^    int port;$/;"	m	class:SelPool
+print	include/HTTPHeader.h	/^	void print() {$/;"	f	class:HTTPHeader
+print	src/HTTPRequest.cpp	/^void HTTPRequest::print()$/;"	f	class:HTTPRequest
+print	src/HTTPResponse.cpp	/^void HTTPResponse::print()$/;"	f	class:HTTPResponse
+print_clients	src/SelectEngine.cpp	/^void SelPool::print_clients()$/;"	f	class:SelPool
+processHandler	src/SelectEngine.cpp	/^int SelPool::processHandler(ClientConnection *client)$/;"	f	class:SelPool
+randomData	client.py	/^	randomData = []$/;"	v
+randomData	cp1_checker.py	/^	randomData = []$/;"	v
+randomLen	client.py	/^	randomLen = []$/;"	v
+randomLen	cp1_checker.py	/^	randomLen = []$/;"	v
+random_len	client.py	/^			random_len = random.randrange(1, numBytes)$/;"	v
+random_len	cp1_checker.py	/^			random_len = random.randrange(1, numBytes)$/;"	v
+random_string	client.py	/^			random_string = os.urandom(random_len)$/;"	v
+random_string	cp1_checker.py	/^			random_string = os.urandom(random_len)$/;"	v
+readBuffer	include/ClientConnection.h	/^    char *readBuffer;$/;"	m	class:ClientConnection
+readHandler	src/SelectEngine.cpp	/^void SelPool::readHandler(ClientConnection *client)$/;"	f	class:SelPool
+read_set	include/SelectEngine.h	/^    fd_set read_set;$/;"	m	class:SelPool
+removeReadSize	src/ClientConnection.cpp	/^void ClientConnection::removeReadSize(ssize_t readSize)$/;"	f	class:ClientConnection
+removeWriteSize	src/ClientConnection.cpp	/^void ClientConnection::removeWriteSize(ssize_t writeSize)$/;"	f	class:ClientConnection
+req	include/ClientConnection.h	/^    HTTPRequest *req;$/;"	m	class:ClientConnection
+requestDone	include/HTTPRequest.h	/^        requestDone,$/;"	e	enum:HTTPRequest::ParseState
+requestError	include/HTTPRequest.h	/^        requestError,$/;"	e	enum:HTTPRequest::ParseState
+requestLine	include/HTTPRequest.h	/^        requestLine,$/;"	e	enum:HTTPRequest::ParseState
+res	include/ClientConnection.h	/^    HTTPResponse *res;$/;"	m	class:ClientConnection
+s	client.py	/^	s = socket(AF_INET, SOCK_STREAM)$/;"	v
+s	cp1_checker.py	/^	s = socket(AF_INET, SOCK_STREAM)$/;"	v
+s	include/HTTPRequest.h	/^    string s;$/;"	m	struct:methodEntry
+serverHost	client.py	/^serverHost = sys.argv[1].strip()$/;"	v
+serverHost	cp1_checker.py	/^serverHost = sys.argv[1].strip()$/;"	v
+serverPort	client.py	/^serverPort = int(sys.argv[2])$/;"	v
+serverPort	cp1_checker.py	/^serverPort = int(sys.argv[2])$/;"	v
+serverPort	include/ClientConnection.h	/^    int serverPort;$/;"	m	class:ClientConnection
+setClosed	include/ClientConnection.h	/^    void setClosed() { isOpen = 0; }$/;"	f	class:ClientConnection
+setParseStatus	include/HTTPRequest.h	/^    void setParseStatus(enum ParseState _parseStatus) { parseStatus = _parseStatus; }$/;"	f	class:HTTPRequest
+setRequest	include/ClientConnection.h	/^    void setRequest(HTTPRequest* _request) { req = _request; }$/;"	f	class:ClientConnection
+setRequestError	src/HTTPRequest.cpp	/^void HTTPRequest::setRequestError(enum StatusCode code)$/;"	f	class:HTTPRequest
+setState	include/ClientConnection.h	/^    void setState(enum State _state) { state = _state; }$/;"	f	class:ClientConnection
+socketList	client.py	/^socketList = []$/;"	v
+socketList	cp1_checker.py	/^socketList = []$/;"	v
+socketSubset	client.py	/^	socketSubset = []$/;"	v
+socketSubset	client.py	/^	socketSubset = random.sample(socketList, numConnections)$/;"	v
+socketSubset	cp1_checker.py	/^	socketSubset = []$/;"	v
+socketSubset	cp1_checker.py	/^	socketSubset = random.sample(socketList, numConnections)$/;"	v
+state	include/ClientConnection.h	/^    enum State state;$/;"	m	class:ClientConnection	typeref:enum:ClientConnection::State
+state	include/HTTPRequest.h	/^    enum State state;$/;"	m	class:HTTPRequest	typeref:enum:HTTPRequest::State
+statusCode	include/HTTPRequest.h	/^    int statusCode;$/;"	m	class:HTTPRequest
+statusLine	include/HTTPResponse.h	/^    string statusLine;$/;"	m	class:HTTPResponse
+strnstr	src/MyString.cpp	/^char* MyString::strnstr(char* str, const char* match, int n)$/;"	f	class:MyString
+toClose	include/HTTPResponse.h	/^    int toClose() { return close; }$/;"	f	class:HTTPResponse
+type	include/FileIO.h	/^    enum MIMEType type;$/;"	m	class:FileIO	typeref:enum:FileIO::MIMEType
+uri	include/HTTPRequest.h	/^    char *uri;$/;"	m	class:HTTPRequest
+value	include/HTTPHeader.h	/^    string value;$/;"	m	class:HTTPHeader
+version	include/HTTPRequest.h	/^    int version;$/;"	m	class:HTTPRequest
+writeBuffer	include/ClientConnection.h	/^    char *writeBuffer;$/;"	m	class:ClientConnection
+writeHandler	src/SelectEngine.cpp	/^void SelPool::writeHandler(ClientConnection *client)$/;"	f	class:SelPool
+writeResponse	src/HTTPResponse.cpp	/^int HTTPResponse::writeResponse(char *buf, ssize_t maxSize, ssize_t *retSize)$/;"	f	class:HTTPResponse
+write_set	include/SelectEngine.h	/^    fd_set write_set;$/;"	m	class:SelPool
+wwwFolder	include/FileIO.h	/^    static string wwwFolder;$/;"	m	class:FileIO
+wwwFolder	src/FileIO.cpp	/^string FileIO::wwwFolder;$/;"	m	class:FileIO	file:
+~ClientConnection	src/ClientConnection.cpp	/^ClientConnection::~ClientConnection()$/;"	f	class:ClientConnection
+~FileIO	src/FileIO.cpp	/^FileIO::~FileIO()$/;"	f	class:FileIO
+~HTTPRequest	src/HTTPRequest.cpp	/^HTTPRequest::~HTTPRequest()$/;"	f	class:HTTPRequest
+~HTTPResponse	src/HTTPResponse.cpp	/^HTTPResponse::~HTTPResponse()$/;"	f	class:HTTPResponse

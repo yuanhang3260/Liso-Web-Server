@@ -28,6 +28,10 @@ HTTPResponse::HTTPResponse()
 /** @brief Class HTTPResponse Destructor */
 HTTPResponse::~HTTPResponse()
 {
+    if (file != NULL) {
+        free(file);
+    }
+    
     if (headerBuffer) {
         free(headerBuffer);
     }
@@ -78,7 +82,7 @@ void HTTPResponse::buildHTTPResponse(HTTPRequest *req)
         /* Serve Error request */
         headers.push_back( new HTTPHeader("Connection", "close") );
         close = 1;
-    } 
+    }
     else
     {
         switch(req->getMethod())
@@ -86,14 +90,18 @@ void HTTPResponse::buildHTTPResponse(HTTPRequest *req)
             case HTTPRequest::POST :
 
             case HTTPRequest::GET :
+                if (file != NULL) {
+                    free(file);
+                }
                 printf("Load file for GET\n");
+                file = new FileIO(req->getURI());
                 fileBuffer = file->loadFile();
                 if (fileBuffer == NULL) {
                     fprintf(stderr, "Load File %s failed\n", (file->getPath()).c_str());
                     statusLine = "HTTP/1.1 404 NOT FOUND\r\n";
                 }
                 maxFilePtr = file->getSize();
-
+                
             case HTTPRequest::HEAD : {
                 /* Connection */
                 string val = req->getHeaderValueByKey("Connection");
@@ -327,19 +335,7 @@ int HTTPResponse::addStatusLine(HTTPRequest *req)
                 break;
         }
     }
-    else 
-    {
-        file = new FileIO(req->getURI());
-        if(file == NULL)
-        {
-            printf("Failed parpared file\n");
-            errorFlag = 1;
-            statusLine = "HTTP/1.1 404 FILE NOT FOUND\r\n";
-        }
-        else {
-            printf("Success init file\n");
-        }
-    }
+    
     return errorFlag;
 }
 
