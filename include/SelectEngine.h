@@ -40,7 +40,7 @@ public:
     /** pipe Handler */
     void pipeHandler(ClientConnection *client);
     /** process Handler */
-    int processHandler(ClientConnection *client);
+    void processHandler(ClientConnection *client);
     /** write Handler */
     void writeHandler(ClientConnection *client);
     /** close Handler */

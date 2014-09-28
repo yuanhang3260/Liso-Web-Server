@@ -132,8 +132,9 @@ void SelPool::check_clients()
                     readHandler(client);
                     if (client->getState() == ClientConnection::Request_Parsed)
                     {
-                        int re = processHandler(client);
-                        if (re == CLIENT_CLOSED)
+                        processHandler(client);
+                        /* if the client is closed after processing */
+                        if (client->getState() == ClientConnection::Closed)
                         {
                             Socket::Close_Socket(connfd);
                             FD_CLR(connfd, &read_set);
@@ -159,14 +160,12 @@ void SelPool::check_clients()
                 {
                     if (!client->getRequest()->isCGIRequest())
                     {
-                        printf("normal\n");
                         processHandler(client);
                         writeHandler(client);
                     }
                     else if (FD_ISSET(client->getResponse()->getCGIout(), &read_set))
                     {
                         /* CGI request : if CGIout is also ready for reading */
-                        printf("pipe\n");
                         pipeHandler(client);
                         writeHandler(client);
                     }
@@ -236,7 +235,7 @@ void SelPool::readHandler(ClientConnection *client)
         }
     }
     /** EOF incurred, connection closed by client */
-    else if(retSize == 0)
+    else if (retSize == 0)
     {
         printf("set Client [%d] closed\n", connFd);
         client->setClosed();
@@ -274,13 +273,14 @@ void SelPool::readHandler(ClientConnection *client)
 }
 
 
-int SelPool::processHandler(ClientConnection *client)
+void SelPool::processHandler(ClientConnection *client)
 {
     printf("\nProcessing\n");
     /** skip connection that has been closed */
-    if(client->isClosed()) {
+    if (client->isClosed()) {
         printf("Connection to client has been closed\n");
-        return CLIENT_CLOSED;
+        client->setState(ClientConnection::Closed);
+        return;
     }
 
     switch( client->getRequest()->getState() )
@@ -333,7 +333,7 @@ int SelPool::processHandler(ClientConnection *client)
         default:
             break;
     }
-    return 0;
+    return;
 }
 
 
@@ -402,10 +402,10 @@ void SelPool::pipeHandler(ClientConnection *client)
         printf( "%d bytes read from CGI pipe\n", retSize);
         client->addWriteSize(retSize);
     }
-    else if (retSize == 0) 
+    else if (retSize == 0)
     {
         printf("CGI out pipe closed\n");
-        //cleanConnObjCGI(client);
+        client->setState(ClientConnection::Done_Response);
     }
 }
 

@@ -23,6 +23,7 @@ public:
         Request_Parsed,
         Writing_Response,
         Done_Response,
+        Closed
     };
 
     enum HTTPType {
