@@ -114,7 +114,7 @@ void HTTPRequest::httpParse(char *bufPtr, ssize_t *size)
             if (parseStatus == requestDone || parseStatus == requestError) {
                 break;
             }
-
+            
             /* go to next Line */
             thisLine = nextLine;
             /* decrease request size */
@@ -263,7 +263,7 @@ void HTTPRequest::httpParseLine( char *_line,
             parseStatus = requestDone;
         }
 
-        if (length - curLength <= lineSize) 
+        if (length - curLength <= lineSize)
         {
             printf("Stat content length = %d, curLength = %d, lineSize=%d \n", length, curLength, lineSize);
             ssize_t readSize = length - curLength;
@@ -274,7 +274,7 @@ void HTTPRequest::httpParseLine( char *_line,
             parseStatus = requestDone;
             *parsedSize = readSize;
             printf("Got content %d done\n", readSize);
-        } 
+        }
         else
         {
             content = (char*) realloc(content, curLength + lineSize + 1);
