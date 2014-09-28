@@ -48,8 +48,12 @@ HTTPRequest::HTTPRequest(ClientConnection *_client, int port, const char *addr, 
 HTTPRequest::~HTTPRequest()
 {
     //printf("Staring free Req: ");
-    free(uri);
-    free(content);
+    if (uri != NULL) {
+        free(uri);
+    }
+    if (content != NULL) {
+        free(content);
+    }
 
     for (size_t i = 0; i < headers.size(); i++) {
         delete headers[i];
@@ -216,7 +220,7 @@ void HTTPRequest::httpParseLine( char *_line,
         if(lineSize == 2 && line[0] == '\r' && line[1] == '\n')
         {
             printf("Header Close line\n");
-            if(isValidRequest()) 
+            if (isValidRequest()) 
             {
                 if(method == GET || method == HEAD) {
                     parseStatus = requestDone;
@@ -249,43 +253,48 @@ void HTTPRequest::httpParseLine( char *_line,
         }
     }
     break;
+
     case contentLine: {
-        //printf("[content Line] - \n");
-        // char *lengthStr = getValueByKey(header, "content-length");
-        // int length = atoi(lengthStr);
-        // int curLength = contentLength;
-        // if(curLength == length) {
-        //     parseStatus = requestDone;
-        // }
-        // if(length - curLength <= lineSize) 
-        // {
-        //     printf("Stat content length=%d, curLength=%d, lineSize=%d \n", length, curLength, lineSize);
-        //     ssize_t readSize = length - curLength;
-        //     content = realloc(content, length + 1);
-        //     content[length] = '\0';
-        //     memcpy(content + curLength, line, readSize);
-        //     contentLength = length;
-        //     state = requestDone;
-        //     *parsedSize = readSize;
-        //     printf("Got content %d done\n", readSize);
-        // } 
-        // else 
-        // {
-        //     content = realloc(content, curLength + lineSize + 1);
-        //     content[curLength+lineSize] = '\0';
-        //     memcpy(content + curLength, line, lineSize);
-        //     contentLength = curLength + lineSize;
-        //     state = content;
-        //     printf("Got content %d in middle\n", lineSize);
-        // }
+        printf("[content Line] - \n");
+        string lengthStr = getHeaderValueByKey("Content-Length");
+        int length = atoi(lengthStr.c_str());
+        int curLength = contentLength;
+        if (curLength == length) {
+            parseStatus = requestDone;
+        }
+
+        if (length - curLength <= lineSize) 
+        {
+            printf("Stat content length = %d, curLength = %d, lineSize=%d \n", length, curLength, lineSize);
+            ssize_t readSize = length - curLength;
+            content = (char*) realloc(content, length + 1);
+            content[length] = '\0';
+            memcpy(content + curLength, line, readSize);
+            contentLength = length;
+            parseStatus = requestDone;
+            *parsedSize = readSize;
+            printf("Got content %d done\n", readSize);
+        } 
+        else
+        {
+            content = (char*) realloc(content, curLength + lineSize + 1);
+            content[curLength+lineSize] = '\0';
+            memcpy(content + curLength, line, lineSize);
+            contentLength = curLength + lineSize;
+            parseStatus = contentLine;
+            printf("Got content %d in middle\n", lineSize);
+        }
         break;
     }
+
     case requestError:
         //printf("[request Error] - \n");
         break;
+
     case requestDone:
         //printf("[request done] - \n");
         break;
+
     default:
         //printf("[Unknown] - \n");
         break;

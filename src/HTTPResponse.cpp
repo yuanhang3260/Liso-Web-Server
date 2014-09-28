@@ -86,9 +86,9 @@ int HTTPResponse::buildHTTPResponse(HTTPRequest *req)
     {
         switch(req->getMethod())
         {
-            case HTTPRequest::POST :
+            case HTTPRequest::POST:
 
-            case HTTPRequest::GET :
+            case HTTPRequest::GET:
                 if (file != NULL) {
                     free(file);
                 }
@@ -198,7 +198,7 @@ int HTTPResponse::buildCGIResponse(HTTPRequest *req)
         close(stdin_pipe[1]);
         dup2(stdout_pipe[1], fileno(stdout));
         dup2(stdin_pipe[0], fileno(stdin));
-        
+
         if (execv(pathCGI, argvCGI)) {
             printf("Error execve [%s]\n", pathCGI);
             return -1;
