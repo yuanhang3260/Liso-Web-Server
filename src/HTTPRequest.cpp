@@ -77,7 +77,9 @@ void HTTPRequest::httpParse(char *bufPtr, ssize_t *size)
         /* no complete request in the read buffer. */
         if (client->isFull())
         {   
-            // TODO: really should do that?
+            // TODO: really should do that? 
+            // No... should continue parsing. Parse to the last line in current buffer
+            // and continue reading data from socket. 
             printf("Parsing result: Error - Abort request longer than buffer size\n");
             state = ParsedError;
             /* reset parse status */
@@ -114,7 +116,7 @@ void HTTPRequest::httpParse(char *bufPtr, ssize_t *size)
             if (parseStatus == requestDone || parseStatus == requestError) {
                 break;
             }
-            
+
             /* go to next Line */
             thisLine = nextLine;
             /* decrease request size */
