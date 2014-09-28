@@ -282,7 +282,7 @@ void HTTPRequest::httpParseLine( char *_line,
             memcpy(content + curLength, line, lineSize);
             contentLength = curLength + lineSize;
             parseStatus = contentLine;
-            printf("Got content %d in middle\n", lineSize);
+            printf("Got content %d receiving\n", lineSize);
         }
         break;
     }
