@@ -44,6 +44,8 @@ public:
     string getWWWFolder() { return wwwFolder; }
     string getLockFile() { return lockFile; }
 
+    static string createPath(string dir, string uri, string fileName);
+
 /*----------------------------------------------------------------------------*/
 private:
     int fd;
@@ -52,7 +54,6 @@ private:
     int length;
     time_t lastMod;
 
-    string createPath(string dir, string uri, string fileName);
     enum MIMEType getFileTypeFromName();
 };
 

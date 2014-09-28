@@ -67,8 +67,13 @@ void SelPool::Select()
         {
             printf("put %d to write_set\n", connFd);
             FD_SET(connFd, &write_set);
+            /* if it is CGI request, put its CGI_out pipe to read set */
             if (client->getRequest()->isCGIRequest()) {
-                FD_SET(client->getResponse()->getCGIout(), &write_set);
+                int CGIout = client->getResponse()->getCGIout();
+                if (CGIout > maxfd) {
+                    maxfd = CGIout;
+                }
+                FD_SET(CGIout, &read_set);
             }
         }
         it++;
@@ -118,7 +123,7 @@ void SelPool::check_clients()
         /* Client Connection State Machine */
         switch ( client->getState() )
         {
-            case ClientConnection::Ready_ForRead: 
+            case ClientConnection::Ready_ForRead:
             {
                 printf("Client State: Ready_ForRead\n");
                 /* read ready client socket */
@@ -154,12 +159,14 @@ void SelPool::check_clients()
                 {
                     if (!client->getRequest()->isCGIRequest())
                     {
+                        printf("normal\n");
                         processHandler(client);
                         writeHandler(client);
                     }
-                    else if (FD_ISSET(client->getResponse()->getCGIout(), &write_set))
+                    else if (FD_ISSET(client->getResponse()->getCGIout(), &read_set))
                     {
                         /* CGI request : if CGIout is also ready for reading */
+                        printf("pipe\n");
                         pipeHandler(client);
                         writeHandler(client);
                     }

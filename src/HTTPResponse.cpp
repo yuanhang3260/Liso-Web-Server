@@ -190,15 +190,15 @@ int HTTPResponse::buildCGIResponse(HTTPRequest *req)
     /* child, setup environment, execve */
     if (pid == 0) 
     {
-        char *pathCGI = req->getURI();
+        char *pathCGI = (char*) FileIO::createPath(".", req->getURI(), "").c_str();
         char *argvCGI[] = {pathCGI, NULL};
         //char **envpCGI = fillENVP(req);
+        printf("To execve [%s]\n", pathCGI);
         close(stdout_pipe[0]);
         close(stdin_pipe[1]);
         dup2(stdout_pipe[1], fileno(stdout));
         dup2(stdin_pipe[0], fileno(stdin));
-
-        printf("To execve [%s]\n", pathCGI);
+        
         if (execv(pathCGI, argvCGI)) {
             printf("Error execve [%s]\n", pathCGI);
             return -1;

@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     Logger::log("Select Pool initialized with %d slots ...\n\n", FD_SETSIZE);
 
     /* init FileIO */
-    FileIO::initFileIO("./lockfile", "./static_site", "./CGI");
+    FileIO::initFileIO("./lockfile", "./static_site", "./cgi-bin");
     
     /* begin loop */
     int loop_num = 1;
