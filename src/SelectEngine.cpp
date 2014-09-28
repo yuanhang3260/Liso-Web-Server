@@ -67,6 +67,9 @@ void SelPool::Select()
         {
             printf("put %d to write_set\n", connFd);
             FD_SET(connFd, &write_set);
+            if (client->getRequest()->isCGIRequest()) {
+                FD_SET(client->getResponse()->getCGIout(), &write_set);
+            }
         }
         it++;
     }
@@ -149,8 +152,17 @@ void SelPool::check_clients()
                 printf("Client State: Writing_Response\n");
                 if (FD_ISSET(connfd, &write_set)) 
                 {
-                    processHandler(client);
-                    writeHandler(client);
+                    if (!client->getRequest()->isCGIRequest())
+                    {
+                        processHandler(client);
+                        writeHandler(client);
+                    }
+                    else if (FD_ISSET(client->getResponse()->getCGIout(), &write_set))
+                    {
+                        /* CGI request : if CGIout is also ready for reading */
+                        pipeHandler(client);
+                        writeHandler(client);
+                    }
                 }
                 break;
             }
@@ -282,16 +294,19 @@ int SelPool::processHandler(ClientConnection *client)
             {
                 printf( "Create new response\n");
                 res = client->createResponse();
-                // if(isCGIResponse(connPtr->res)) {
-                //     connPtr->CGIout = connPtr->res->CGIout;
-                // }
                 res->buildResponse(client->getRequest());
             }
             
+            /* if it's CGI request, wait until the next select loop to write */
+            if (client->getRequest()->isCGIRequest()) {
+                client->setState(ClientConnection::Writing_Response);
+                break;
+            }
+
             /* Dump HTTP response to send buffer */
             ssize_t size, retSize;
             char *write_buf = client->getWriteBuffer_ForWrite(&size);
-            printf( "Write buffer has %d bytes free\n", size);
+            printf("Write buffer has %d bytes free\n", size);
             
             int re = res->writeResponse(write_buf, size, &retSize);
             client->addWriteSize(retSize);
@@ -362,37 +377,30 @@ void SelPool::writeHandler(ClientConnection *client)
         client->setState(ClientConnection::Ready_ForRead);
         client->deleteResponse();
     }
-
 }
 
 
-// void SelPool::pipeConnectionHandler(connObj *connPtr)
-// {
-//     char *buf;
-//     ssize_t size;
-//     getConnObjWriteBufferForWrite(connPtr, &buf, &size);
-//     if(size > 0) 
-//     {
-//         ssize_t retSize = read(connPtr->CGIout, buf, size);
-//         if(retSize > 0) 
-//         {
-//             printf( "%d bytes read from CGI pipe\n", retSize);
-//             addConnObjWriteSize(connPtr, retSize);
-//         }
-//         else if(retSize == 0) 
-//         {
-//             printf( "CGI pipe broken\n", retSize);
-//             cleanConnObjCGI(connPtr);
-//         }
-//         else 
-//         {
-//             if(errno != EINTR) {
-//                 cleanConnObjCGI(connPtr);
-//                 setConnObjClose(connPtr);
-//             }
-//         }
-//     }
-// }
+void SelPool::pipeHandler(ClientConnection *client)
+{
+    ssize_t size;
+    char *buf = client->getWriteBuffer_ForWrite(&size); 
+    if (size <= 0) {
+        return;
+    }
+    
+    ssize_t retSize = read(client->getResponse()->getCGIout(), buf, size);
+    printf("CGI output: %s\n", buf);
+    if(retSize > 0)
+    {
+        printf( "%d bytes read from CGI pipe\n", retSize);
+        client->addWriteSize(retSize);
+    }
+    else if (retSize == 0) 
+    {
+        printf("CGI out pipe closed\n");
+        //cleanConnObjCGI(client);
+    }
+}
 
 
 /** @brief print clients

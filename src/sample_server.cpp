@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     int loop_num = 1;
     while (1)
     {
-        //sleep(1);
+        sleep(1);
         printf("-------------------------- loop %d -----------------------------\n", loop_num++);
         //pool.print_clients();
 

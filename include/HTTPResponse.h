@@ -26,12 +26,13 @@ public:
 
     int writeResponse(char *, ssize_t , ssize_t *);
     void buildResponse(HTTPRequest *);
-    void buildHTTPResponse(HTTPRequest *);
-    //int buildCGIResponse(HTTPRequest *);
+    int buildHTTPResponse(HTTPRequest *);
+    int buildCGIResponse(HTTPRequest *);
 
     /** Get close status */
-    int toClose() { return close; }
+    //int toClose() { return close; }
     int isCGIResponse();
+    int getCGIout() { return CGIout; }
     string getHeaderValueByKey(string key);
 
 /*----------------------------------------------------------------------------*/
@@ -55,7 +56,7 @@ private:
     int CGIout;
     pid_t pid;
     
-    int close;
+    //int close;
 
     /* Private methods */
     void fillHeader();

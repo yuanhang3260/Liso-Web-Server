@@ -64,7 +64,7 @@ public:
     /** parse http request */
     void httpParse(char *bufPtr, ssize_t *size);
     /** is a CGI request */
-    //int isCGIRequest();
+    int isCGIRequest() { return isCGI; }
     /** is a new request */
     int isNewRequest() { return isNew; }
 
@@ -109,6 +109,8 @@ private:
     void setRequestError(enum StatusCode );
 
     int isValidRequest();
+    int checkIsCGIRequest(char* uri);
+
     
     //void buildENVP();
     //void insertENVP(char*, char*);

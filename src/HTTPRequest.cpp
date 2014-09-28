@@ -25,7 +25,7 @@ HTTPRequest::HTTPRequest(ClientConnection *_client, int port, const char *addr, 
     parseStatus = requestLine;
     
     isNew = 1;
-    isCGI = -1;
+    isCGI = 0;
 
     (void)addr;
 
@@ -198,6 +198,7 @@ void HTTPRequest::httpParseLine( char *_line,
             {
                 uri = new char[strlen(_uri) + 1];
                 strncpy(uri, _uri, strlen(_uri) + 1);
+                isCGI = checkIsCGIRequest(uri);
                 version = version2;
                 parseStatus = headerLine;
             }
@@ -290,6 +291,22 @@ void HTTPRequest::httpParseLine( char *_line,
         break;
     }
     delete[] line;
+}
+
+int HTTPRequest::checkIsCGIRequest(char* uri)
+{
+    unsigned int len = 0;
+    while (*(uri + len) != '\0') {
+        len++;
+    }
+    if (len < strlen("/cgi-bin/")) {
+        return 0;
+    }
+    if (strncmp(uri, "/cgi-bin/", 8) != 0) {
+        return 0;
+    }
+    //printf("uri = %s\n", uri);
+    return 1;
 }
 
 

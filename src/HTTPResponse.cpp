@@ -4,6 +4,8 @@
  */
 
 #include <sstream>
+#include <fcntl.h>
+
 #include "HTTPResponse.h"
 
 
@@ -19,7 +21,7 @@ HTTPResponse::HTTPResponse()
     filePtr = 0;
     maxHeaderPtr = 0;
     maxFilePtr = 0;
-    close = 0;
+    //close = 0;
     CGIout = -1;
     pid = 0;
 }
@@ -31,7 +33,7 @@ HTTPResponse::~HTTPResponse()
     if (file != NULL) {
         free(file);
     }
-    
+
     if (headerBuffer) {
         free(headerBuffer);
     }
@@ -57,31 +59,28 @@ HTTPResponse::~HTTPResponse()
 /** @brief Build Response */
 void HTTPResponse::buildResponse(HTTPRequest *req)
 {
-    // if(isCGIRequest(req)) 
-    // {
-    //     int status = buildCGIResponseObj(res, req);
-    //     if(status == -1) {
-    //         setRequestError(req, INTERNAL_SERVER_ERROR);
-    //     } else {
-    //         return;
-    //     }
-    // }
-    buildHTTPResponse(req);
+    if(req->isCGIRequest()) {
+        buildCGIResponse(req); 
+    }
+    else {
+        buildHTTPResponse(req);
+    }
+    return;
 }
 
 
-void HTTPResponse::buildHTTPResponse(HTTPRequest *req)
+int HTTPResponse::buildHTTPResponse(HTTPRequest *req)
 {
     /* Add general headers */
     headers.push_back( new HTTPHeader("Date", getHTTPDate(time(0))) );
     headers.push_back( new HTTPHeader("Server", "Liso/v1.0") );
 
     int errorFlag = addStatusLine(req);
-    if(errorFlag == 1) 
+    if(errorFlag == 1)
     {
         /* Serve Error request */
         headers.push_back( new HTTPHeader("Connection", "close") );
-        close = 1;
+        //close = 1;
     }
     else
     {
@@ -107,7 +106,7 @@ void HTTPResponse::buildHTTPResponse(HTTPRequest *req)
                 string val = req->getHeaderValueByKey("Connection");
                 if(val.compare("close") == 0) {
                     headers.push_back( new HTTPHeader("Connection", "close") );
-                    close = 1;
+                    //close = 1;
                 }
                 else {
                     headers.push_back( new HTTPHeader("Connection", "keep-alive") );
@@ -131,6 +130,7 @@ void HTTPResponse::buildHTTPResponse(HTTPRequest *req)
     }
     printf("Fill header...\n");
     fillHeader();
+    return 0;
     //print();
 }
 
@@ -167,6 +167,68 @@ void HTTPResponse::fillHeader()
 }
 
 
+int HTTPResponse::buildCGIResponse(HTTPRequest *req)
+{
+    pid_t pid;
+    int stdin_pipe[2];
+    int stdout_pipe[2];
+    if (pipe(stdin_pipe) < 0 ) {
+        printf("Error piping for stdin.\n");
+        return -1;
+    }
+    if (pipe(stdout_pipe) < 0 ) {
+        printf("Error piping for stdout.\n");
+        return -1;
+    }
+
+    pid = fork();
+    /* not good */
+    if (pid < 0) {
+        printf("Error forking.\n");
+        return -1;
+    }
+    /* child, setup environment, execve */
+    if (pid == 0) 
+    {
+        char *pathCGI = req->getURI();
+        char *argvCGI[] = {pathCGI, NULL};
+        //char **envpCGI = fillENVP(req);
+        close(stdout_pipe[0]);
+        close(stdin_pipe[1]);
+        dup2(stdout_pipe[1], fileno(stdout));
+        dup2(stdin_pipe[0], fileno(stdin));
+
+        printf("To execve [%s]\n", pathCGI);
+        if (execv(pathCGI, argvCGI)) {
+            printf("Error execve [%s]\n", pathCGI);
+            return -1;
+        }
+    }
+    /* parent process */
+    if (pid > 0) {
+        printf("Parent: Heading to select() loop.\n");
+        close(stdout_pipe[1]);
+        close(stdin_pipe[0]);
+        // if (req->contentLength > 0) 
+        // {
+        //     if (write(stdin_pipe[1],
+        //               req->content,
+        //               req->contentLength) < 0) {
+        //         printf("Parent: Error writing to child.\n");
+        //         close(stdin_pipe[1]);
+        //         return -1;
+        //     }
+        // }
+        close(stdin_pipe[1]);
+
+        CGIout = stdout_pipe[0];
+        return 0;
+    }
+    printf("Ooops! Unreachable code reached!\n");
+    return -1;
+}
+
+
 // char** HTTPResponse::fillENVP(HTTPRequest *req)
 // {
 //     DLL *envpList = req->envp;
@@ -185,65 +247,6 @@ void HTTPResponse::fillHeader()
 //     }
 //     ret[i] = NULL;
 //     return ret;
-// }
-
-// int HTTPResponse::buildCGIResponseObj(responseObj *res, HTTPRequest *req)
-// {
-//     pid_t pid;
-//     int stdin_pipe[2];
-//     int stdout_pipe[2];
-//     if(pipe(stdin_pipe) < 0 ) {
-//         printf("Error piping for stdin.\n");
-//         return -1;
-//     }
-//     if(pipe(stdout_pipe) < 0 ) {
-//         printf("Error piping for stdout.\n");
-//         return -1;
-//     }
-//     pid = fork();
-//     /* not good */
-//     if (pid < 0) {
-//         printf("Error forking.\n");
-//         return -1;
-//     }
-//     /* child, setup environment, execve */
-//     if (pid == 0) {
-//         char *pathCGI = getCGIPath();
-//         char *argvCGI[] = {pathCGI, NULL};
-//         char **envpCGI = fillENVP(req);
-//         close(stdout_pipe[0]);
-//         close(stdin_pipe[1]);
-//         dup2(stdout_pipe[1], fileno(stdout));
-//         dup2(stdin_pipe[0], fileno(stdin));
-
-//         printf("To execve [%s]\n", pathCGI);
-//         if (execve(pathCGI, argvCGI, envpCGI)) {
-//             printf("Error execve [%s]\n", pathCGI);
-//             return -1;
-//         }
-//     }
-//     if (pid > 0) {
-//         printf("Parent: Heading to select() loop.\n");
-//         close(stdout_pipe[1]);
-//         close(stdin_pipe[0]);
-//         if(req->contentLength > 0) {
-//             if (write(stdin_pipe[1],
-//                       req->content,
-//                       req->contentLength) < 0) {
-//                 printf("Parent: Error writing to child.\n");
-//                 close(stdin_pipe[1]);
-//                 return -1;
-//             }
-//         }
-//         close(stdin_pipe[1]);
-
-//         isCGI = 1;
-//         pid = pid;
-//         CGIout = stdout_pipe[0];
-//         return 1;
-//     }
-//     printf("Ooops! Unreachable code reached!\n");
-//     return 0;
 // }
 
 
